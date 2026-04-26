@@ -1,0 +1,64 @@
+# Simple Prints & RVGPT Setup
+
+## Files Created:
+
+### rvgpt.py - Standalone AI Chatbot
+- Copy anywhere and run
+- Text + Voice + Image support
+- Syncs with product tracker
+- Dark mode interface
+
+### server.py - Product AI (old)
+- Used for product details in Simple Prints
+- Smaller, faster responses
+
+## Quick Start
+
+### RVGPT (Chatbot):
+```bash
+python3 rvgpt.py
+```
+Opens at http://localhost:8080
+
+### Simple Prints Server:
+```bash
+python3 server.py
+```
+Runs at http://localhost:8000
+
+## Get Free Gemini API Key
+
+1. Go to: https://aistudio.google.com/apikey
+2. Sign in with Google
+3. Click "Create API Key"
+4. Copy the key
+
+## Add Key
+
+### For rvgpt3.py (recommended - has logo):
+Line 26: `GEMINI_API_KEY = ""` → `GEMINI_API_KEY = "AIzaSy..."`
+
+### For rvgpt2.py:
+Line 34: `GEMINI_API_KEY = ""` → `GEMINI_API_KEY = "AIzaSy..."`
+
+### For server.py:
+Line 12: `GEMINI_API_KEY = ""` → `GEMINI_API_KEY = "AIzaSy..."`
+
+## Install Dependencies (if needed)
+```bash
+pip3 install requests SpeechRecognition
+```
+
+## Features
+
+### RVGPT:
+- 💬 Chat with AI
+- 🎤 Voice input (say what you want)
+- 🖼️ Image analysis (send screenshots)
+- 📊 Product tracker sync
+- 🔊 Text-to-speech responses
+
+### Simple Prints:
+- 🤖 AI product overview
+- 📦 Order management
+- 📊 Sales tracker

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Prints - 3D Printed Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <style>
+    :root { --primary: #1e3c72; --primary-light: #2a5298; --success: #22c55e; --text: #1f2937; --text-light: #6b7280; --bg: #f8fafc; --card-bg: #ffffff; --border: #e5e7eb; --shadow: 0 2px 8px rgba(0,0,0,0.08); --radius: 12px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); padding: 12px 24px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .logo-btn { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .logo-btn img { width: 40px; height: 40px; border-radius: 10px; }
+    .logo-btn span { color: white; font-size: 1.3rem; font-weight: 700; }
+    .search-box { flex: 1; max-width: 350px; }
+    .search-box input { width: 100%; padding: 10px 16px; border: none; border-radius: 25px; font-size: 0.9rem; outline: none; }
+    .header-buttons { display: flex; gap: 10px; align-items: center; }
+    .cart-button { position: relative; padding: 10px 16px; border: none; border-radius: 25px; background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem; cursor: pointer; }
+    .cart-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; }
+    .user-menu { position: relative; }
+    .user-button { padding: 10px 14px; border: none; border-radius: 25px; background: rgba(255,255,255,0.2); color: white; font-weight: 600; cursor: pointer; }
+    .user-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: none; min-width: 180px; z-index: 200; }
+    .user-dropdown.show { display: block; }
+    .user-dropdown button { width: 100%; padding: 12px 16px; border: none; background: none; text-align: left; font-size: 0.9rem; cursor: pointer; }
+    .user-dropdown button:hover { background: #f3f4f6; }
+    .user-dropdown .divider { border-top: 1px solid var(--border); }
+    .user-dropdown .admin-btn { color: var(--primary); font-weight: 600; }
+    .navbar { background: white; box-shadow: var(--shadow); padding: 0 24px; overflow-x: auto; }
+    .nav-links { display: flex; gap: 8px; max-width: 1400px; margin: 0 auto; padding: 12px 0; }
+    .nav-btn { padding: 10px 18px; border: none; border-radius: 25px; background: transparent; font-size: 0.9rem; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .nav-btn:hover, .nav-btn.active { background: var(--primary); color: white; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .product-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; transition: all 0.25s; cursor: pointer; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .product-image { height: 140px; display: flex; align-items: center; justify-content: center; background: #f5f7fa; }
+    .product-image img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+    .product-info { padding: 14px; }
+    .product-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+    .product-desc { font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px; }
+    .product-price { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+    .add-btn { width: 100%; padding: 10px; border: none; border-radius: 8px; background: var(--primary); color: white; font-weight: 600; cursor: pointer; }
+    .add-btn:hover { background: var(--primary-light); }
+    .product-badges { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
+    .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; }
+    .badge.fire { background: #ff6b6b; color: white; }
+    .badge.worker { background: #ff69b4; color: white; }
+    .badge.deal { background: #ffd700; color: #333; font-weight: bold; }
+    .badge.art { background: #8b5cf6; color: white; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: white; border-radius: var(--radius); max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h2 { font-size: 1.3rem; }
+    .close-btn { width: 32px; height: 32px; border: none; background: #f3f4f6; border-radius: 50%; cursor: pointer; font-size: 1rem; }
+    .modal-body { padding: 20px; }
+    .cart-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: center; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; margin-bottom: 4px; }
+    .cart-item-size { font-size: 0.8rem; color: var(--text-light); }
+    .cart-item-qty { display: flex; align-items: center; gap: 8px; }
+    .qty-btn { width: 28px; height: 28px; border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer; }
+    .cart-total { padding: 16px 0; font-size: 1.2rem; font-weight: 700; display: flex; justify-content: space-between; }
+    .checkout-btn { width: 100%; padding: 16px; border: none; border-radius: var(--radius); background: var(--primary); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; }
+    .product-detail-box { max-width: 900px; }
+    @media(min-width: 700px) { .product-detail-layout { display: flex; } }
+    .product-detail-left { flex: 1; background: #f5f7fa; display: flex; align-items: center; justify-content: center; padding: 30px; }
+    .product-detail-left img { max-width: 100%; max-height: 250px; object-fit: contain; }
+    .product-detail-right { flex: 1; padding: 24px; overflow-y: auto; }
+    .product-detail-right h2 { font-size: 1.6rem; margin-bottom: 8px; }
+    .product-detail-price { font-size: 1.6rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+    .product-detail-desc { color: var(--text-light); line-height: 1.6; margin-bottom: 16px; }
+    .size-selector { margin-bottom: 16px; }
+    .size-selector label { font-weight: 600; display: block; margin-bottom: 8px; }
+    .size-options { display: flex; flex-wrap: wrap; gap: 8px; }
+    .size-btn { padding: 10px 16px; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; }
+    .size-btn.active { border-color: var(--primary); background: var(--primary); color: white; }
+    .art-toggle { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding: 12px; background: #f3f4f6; border-radius: 8px; }
+    .art-toggle input { width: 18px; height: 18px; }
+    .art-toggle label { font-weight: 500; }
+    .qty-selector { display: flex; align-items: center; gap: 0; border: 2px solid var(--border); border-radius: 8px; overflow: hidden; width: fit-content; margin-bottom: 20px; }
+    .qty-selector button { width: 40px; height: 40px; border: none; background: #f3f4f6; cursor: pointer; font-size: 1.2rem; }
+    .qty-selector span { width: 50px; text-align: center; font-weight: 700; }
+    .ai-section { background: #f8f9fa; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+    .ai-section h3 { font-size: 1rem; color: var(--primary); margin-bottom: 8px; }
+    .ai-content { font-size: 0.9rem; line-height: 1.6; color: var(--text); }
+    .rvgpt-sidebar { position: fixed; right: -380px; top: 0; bottom: 0; width: 380px; background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%); z-index: 2000; transition: right 0.3s; display: flex; flex-direction: column; }
+    .rvgpt-sidebar.open { right: 0; }
+    .rvgpt-header { padding: 16px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .rvgpt-header img { width: 36px; height: 36px; border-radius: 10px; }
+    .rvgpt-header h3 { color: white; font-size: 1.2rem; flex: 1; }
+    .rvgpt-close { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 8px; }
+    .rvgpt-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .rvgpt-msg { display: flex; gap: 10px; }
+    .rvgpt-msg.user { flex-direction: row-reverse; }
+    .rvgpt-avatar { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; }
+    .rvgpt-msg.bot .rvgpt-avatar { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
+    .rvgpt-msg.user .rvgpt-avatar { background: #2d2d44; color: white; }
+    .rvgpt-content { max-width: 75%; padding: 12px 14px; border-radius: 14px; font-size: 0.9rem; line-height: 1.5; }
+    .rvgpt-msg.bot .rvgpt-content { background: #252538; color: white; border-bottom-left-radius: 4px; }
+    .rvgpt-msg.user .rvgpt-content { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border-bottom-right-radius: 4px; }
+    .rvgpt-input { padding: 16px; display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .rvgpt-input input { flex: 1; padding: 12px 16px; background: #1e1e32; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; outline: none; }
+    .rvgpt-input input::placeholder { color: #888; }
+    .rvgpt-input button { padding: 12px 20px; border: none; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; cursor: pointer; font-weight: 600; }
+    .rvgpt-toggle { position: fixed; right: 20px; bottom: 20px; width: 60px; height: 60px; border: none; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); cursor: pointer; box-shadow: 0 4px 20px rgba(30,60,114,0.4); z-index: 1999; display: flex; align-items: center; justify-content: center; }
+    .rvgpt-toggle img { width: 36px; height: 36px; border-radius: 10px; }
+    .admin-panel { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 3000; display: none; flex-direction: column; }
+    .admin-panel.show { display: flex; }
+    .admin-header { padding: 16px 24px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; display: flex; justify-content: space-between; align-items: center; }
+    .admin-header h1 { font-size: 1.4rem; }
+    .admin-close { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+    .admin-content { flex: 1; overflow-y: auto; padding: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
+    .admin-section { background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+    .admin-section h2 { font-size: 1.1rem; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .order-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .order-item:last-child { border-bottom: none; }
+    .order-id { font-weight: 600; }
+    .order-status { font-size: 0.85rem; padding: 4px 10px; border-radius: 20px; }
+    .order-status.pending { background: #fef3c7; color: #92400e; }
+    .order-status.ready { background: #dbeafe; color: #1e40af; }
+    .order-status.picked { background: #d1fae5; color: #065f46; }
+    .tracker-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; }
+    .tracker-btn { padding: 12px 20px; border: none; border-radius: 8px; background: var(--primary); color: white; cursor: pointer; width: 100%; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo-btn" onclick="goHome()">
+    <img src="RV.png" alt="Logo">
+    <span>Simple Prints</span>
+  </div>
+  <div class="search-box"><input type="text" id="searchInput" placeholder="Search products..." oninput="searchProducts(this.value)"></div>
+  <div class="header-buttons">
+    <button class="cart-button" onclick="toggleCart()">Cart <span class="cart-badge" id="cartBadge">0</span></button>
+    <div class="user-menu">
+      <button class="user-button" id="userButton" onclick="toggleUserMenu()">Login</button>
+      <div class="user-dropdown" id="userDropdown">
+        <button onclick="showLoginModal()">Sign In</button>
+        <button onclick="logout()" id="logoutBtn" style="display:none">Sign Out</button>
+        <div class="divider"></div>
+        <button onclick="showOrdersModal()" id="myOrdersBtn" style="display:none">My Orders</button>
+        <button onclick="showAdminPanel()" id="adminBtn" class="admin-btn" style="display:none">Admin Panel</button>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="navbar">
+  <div class="nav-links">
+    <button class="nav-btn active" data-category="featured" onclick="filterCategory('featured')">Featured</button>
+    <button class="nav-btn" data-category="all" onclick="filterCategory('all')">All</button>
+    <button class="nav-btn" data-category="animals" onclick="filterCategory('animals')">Animals</button>
+    <button class="nav-btn" data-category="fidgets" onclick="filterCategory('fidgets')">Fidgets</button>
+    <button class="nav-btn" data-category="figures" onclick="filterCategory('figures')">Figures</button>
+    <button class="nav-btn" data-category="vehicles" onclick="filterCategory('vehicles')">Vehicles</button>
+    <button class="nav-btn" data-category="accessories" onclick="filterCategory('accessories')">Accessories</button>
+  </div>
+</nav>
+<div class="container"><div class="products-grid" id="productsGrid"></div></div>
+<div class="modal-overlay" id="cartModal" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header"><h2>Your Cart</h2><button class="close-btn" onclick="closeCart()">X</button></div>
+    <div class="modal-body" id="cartItems"></div>
+    <div class="modal-body">
+      <div class="cart-total"><span>Total</span><span id="cartTotal">$0</span></div>
+      <button class="checkout-btn" onclick="checkout()">Checkout (Cash on Pickup)</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="loginModal" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:400px">
+    <div class="modal-header"><h2>Sign In</h2><button class="close-btn" onclick="closeLoginModal()">X</button></div>
+    <div class="modal-body">
+      <button class="checkout-btn" onclick="signInWithGoogle()" style="margin-bottom:12px">Sign in with Google</button>
+      <button class="checkout-btn" onclick="signInEmail()" style="background:var(--primary)">Sign in with Email</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="ordersModal" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:500px">
+    <div class="modal-header"><h2>My Orders</h2><button class="close-btn" onclick="closeOrdersModal()">X</button></div>
+    <div class="modal-body" id="ordersList"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="productModal" onclick="closeModal(event)">
+  <div class="modal-box product-detail-box" onclick="event.stopPropagation()">
+    <button class="close-btn" style="position:absolute;top:16px;right:16px;z-index:10" onclick="closeProductModal()">X</button>
+    <div class="product-detail-layout">
+      <div class="product-detail-left"><div id="detailImage"></div></div>
+      <div class="product-detail-right">
+        <div class="product-badges" id="detailBadges"></div>
+        <h2 id="detailName">Product</h2>
+        <div class="product-detail-price" id="detailPrice">$0</div>
+        <p class="product-detail-desc" id="detailDesc">Description</p>
+        <div class="art-toggle" id="artToggle" style="display:none">
+          <input type="checkbox" id="artCheck" onchange="updatePrice()">
+          <label>Articulated (+$1)</label>
+        </div>
+        <div class="size-selector"><label>Select Size</label><div class="size-options" id="sizeOptions"></div></div>
+        <div class="qty-selector"><button onclick="changeQty(-1)">-</button><span id="detailQty">1</span><button onclick="changeQty(1)">+</button></div>
+        <div class="ai-section"><h3>Product Overview</h3><p class="ai-content" id="aiContent">Loading...</p></div>
+        <button class="checkout-btn" onclick="addToCartFromDetail()">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="rvgpt-sidebar" id="rvgptSidebar">
+  <div class="rvgpt-header">
+    <img src="RV.png" alt="RVGPT">
+    <h3>RVGPT</h3>
+    <button class="rvgpt-close" onclick="toggleRVGPTSidebar()">X</button>
+  </div>
+  <div class="rvgpt-messages" id="rvgptMessages">
+    <div class="rvgpt-msg bot"><div class="rvgpt-avatar">AI</div><div class="rvgpt-content">Hi! I'm RVGPT. Ask me anything about our 3D printed products!</div></div>
+  </div>
+  <div class="rvgpt-input"><input type="text" id="rvgptInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter')sendRVGPT()"><button onclick="sendRVGPT()">Send</button></div>
+</div>
+<button class="rvgpt-toggle" onclick="toggleRVGPTSidebar()"><img src="RV.png" alt="AI"></button>
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-header">
+    <h1>Admin Panel</h1>
+    <button class="admin-close" onclick="closeAdminPanel()">X</button>
+  </div>
+  <div class="admin-content">
+    <div class="admin-section">
+      <h2>Recent Orders</h2>
+      <div id="adminOrders"></div>
+    </div>
+    <div class="admin-section">
+      <h2>AI Chat</h2>
+      <input type="text" class="tracker-input" id="adminInput" placeholder="Ask anything..." onkeypress="if(event.key==='Enter')sendAdmin()">
+      <div id="adminChat" style="height:300px;overflow-y:auto;background:#f3f4f6;border-radius:8px;padding:12px;margin-bottom:12px"></div>
+    </div>
+    <div class="admin-section">
+      <h2>Order Tracker</h2>
+      <input type="text" class="tracker-input" id="trackerInput" placeholder="Enter order ID...">
+      <select class="tracker-input" id="trackerStatus">
+        <option value="pending">Pending</option>
+        <option value="ready">Ready for Pickup</option>
+        <option value="picked">Picked Up</option>
+      </select>
+      <button class="tracker-btn" onclick="updateOrderStatus()">Update Status</button>
+      <div id="trackerList" style="margin-top:20px"></div>
+    </div>
+  </div>
+</div>
+<script>
+// Firebase
+const firebaseConfig = { apiKey: "AIzaSyCkxvDFA_1WLA-JbQO91EKC8Le_hQR6yF4", authDomain: "simple-print-6fc4a.firebaseapp.com", projectId: "simple-print-6fc4a", storageBucket: "simple-print-6fc4a.appspot.com", messagingSenderId: "537000000000", appId: "1:537000000000:web:0000000000000000" };
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+const adminEmails = ["ruveer123@gmail.com", "harvmiller13@gmail.com", "harveyninja7@gmail.com"];
+
+// Products - Prices: Small $2, Medium $4, Large $10, XtraLarge $30
+// Articulated: Small $3, Medium $5, Large $13, XtraLarge $35
+const sizePrices = { XtraSmall: 0, Small: 2, KindaSmall: 2, Medium: 4, Large: 10, XtraLarge: 30 };
+const sizePricesArt = { XtraSmall: 1, Small: 3, KindaSmall: 3, Medium: 5, Large: 13, XtraLarge: 35 };
+const sizeOrder = ["Small", "Medium", "Large", "XtraLarge"];
+
+const allProducts = [
+  // Accessories
+  {id:1,name:"Pen/Pencil Holder",category:"accessories",price:2,desc:"4 inch tall holder",size:"KindaSmall",emoji:"🖊️"},
+  {id:2,name:"Phone Stand",category:"accessories",price:2,desc:"Fits all phones",size:"KindaSmall",image:"phone.png"},
+  // Fidgets
+  {id:3,name:"Cube",category:"fidgets",price:2,desc:"1x1x1 cube",size:"Small",emoji:"🧊"},
+  {id:4,name:"Button Fidget",category:"fidgets",price:2,desc:"1 inch fidget button",size:"XtraSmall",favorite:"fire",image:"button fidget.png"},
+  {id:5,name:"Switch Fidget",category:"fidgets",price:2,desc:"Switch fidget toy",size:"XtraSmall",image:"switch fidget.png"},
+  {id:6,name:"Fidget Spinner",category:"fidgets",price:2,desc:"Smooth spin fidget",size:"Small",favorite:"fire",image:"fidget.png"},
+  // Sports
+  {id:7,name:"Soccer Ball",category:"featured",price:2,desc:"Mini soccer ball",size:"XtraSmall",favorite:"fire",image:"soccer.png"},
+  {id:8,name:"Football",category:"featured",price:2,desc:"1.5 inch football",size:"KindaSmall",favorite:"fire",image:"football.png"},
+  {id:9,name:"Baseball",category:"featured",price:2,desc:"Mini baseball",size:"XtraSmall",emoji:"⚾"},
+  // Vehicles
+  {id:10,name:"Boat",category:"vehicles",price:2,desc:"2 inch boat",size:"Small",emoji:"🚤"},
+  {id:11,name:"Airplane",category:"vehicles",price:2,desc:"2 inch airplane",size:"Small",emoji:"✈️"},
+  {id:12,name:"Car",category:"vehicles",price:2,desc:"Mini car",size:"Small",emoji:"🚗"},
+  // Animals - with articulation option
+  {id:13,name:"Seal",category:"animals",price:2,desc:"2 inch seal",size:"Small",image:"seal.png",art:true},
+  {id:14,name:"Cat",category:"animals",price:2,desc:"2 inch cat",size:"Small",art:true,emoji:"🐱"},
+  {id:15,name:"Dog",category:"animals",price:2,desc:"2 inch dog",size:"Small",art:true,emoji:"🐕"},
+  {id:16,name:"Frog",category:"animals",price:2,desc:"2 inch frog",size:"Small",art:true,emoji:"🐸"},
+  {id:17,name:"Duck",category:"animals",price:2,desc:"1 inch duck",size:"Small",art:true,emoji:"🦆"},
+  {id:18,name:"Dragon",category:"animals",price:2,desc:"2 inch dragon",size:"Small",art:true,image:"dragon.png"},
+  // Figures
+  {id:19,name:"Among Us",category:"figures",price:2,desc:"2 inch crewmate",size:"Small",image:"among us.png"},
+  {id:20,name:"Medieval Knight",category:"figures",price:4,desc:"Knight figure",size:"Medium",emoji:"🛡️"},
+  {id:21,name:"Ragdoll Man",category:"figures",price:3,desc:"Articulated man figure",size:"Small",art:true,image:"ragdoll man.png"},
+  // AirPods Cases - in accessories now
+  {id:22,name:"AirPods Case",category:"accessories",price:2,desc:"Fits AirPods 1st/2nd Gen",size:"XtraSmall",image:"airpods.png"},
+  {id:23,name:"AirPods Pro Case",category:"accessories",price:2,desc:"Fits AirPods Pro",size:"XtraSmall",image:"airpods.png"},
+  {id:24,name:"AirPods Pro 2 Case",category:"accessories",price:2,desc:"Fits AirPods Pro 2nd Gen",size:"XtraSmall",image:"airpods 2.png"},
+  {id:25,name:"AirPods Max Case",category:"accessories",price:4,desc:"Fits AirPods Max",size:"Small",image:"airpods.png"},
+  // More Accessories
+  {id:26,name:"Headphone Stand",category:"accessories",price:4,desc:"Universal headphone stand",size:"Medium",emoji:"🎧"},
+  {id:27,name:"Controller Stand",category:"accessories",price:3,desc:"Fits gaming controllers",size:"Small",emoji:"🎮"},
+  {id:28,name:"Watch Winder",category:"accessories",price:3,desc:"Watch display stand",size:"Small",emoji:"⌚"},
+  {id:29,name:"Desk Organizer",category:"accessories",price:3,desc:"Pen and phone organizer",size:"Small",emoji:"🗃️"},
+];
+
+let cart = [];
+let currentProduct = null;
+let selectedSize = "Small";
+let detailQuantity = 1;
+let isArticulated = false;
+let currentUser = null;
+let orders = [];
+const RVGPT_URL = "https://rvgpt.onrender.com";
+
+function renderProducts(filtered=null) {
+  const grid = document.getElementById("productsGrid");
+  let products = filtered || allProducts.filter(p => p.favorite || p.deal);
+  if (filtered) products = filtered;
+  grid.innerHTML = products.map(p => {
+    let badges = "";
+    if (p.favorite === "fire") badges += '<span class="badge fire">Popular</span>';
+    if (p.favorite === "worker") badges += '<span class="badge worker">Favorite</span>';
+    if (p.deal) badges += '<span class="badge deal">' + p.deal + '</span>';
+    if (p.art) badges += '<span class="badge art">Articulated</span>';
+    let imgContent;
+    if (p.image) {
+      imgContent = '<img src="' + p.image + '" alt="' + p.name + '" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<span style=&quot;font-size:3rem&quot;>' + (p.emoji || '📦') + '</span>\'">';
+    } else {
+      imgContent = '<span style="font-size:3rem">' + (p.emoji || '📦') + '</span>';
+    }
+    return '<div class="product-card" onclick="showProductDetail(' + p.id + ')"><div class="product-image">' + imgContent + '</div><div class="product-info"><div class="product-badges">' + badges + '</div><div class="product-name">' + p.name + '</div><div class="product-desc">' + p.desc + '</div><div class="product-price">$' + p.price + '</div><button class="add-btn" onclick="event.stopPropagation();quickAdd(' + p.id + ')">Add to Cart</button></div></div>';
+  }).join("");
+}
+
+function goHome() { filterCategory("featured"); window.scrollTo(0,0); }
+function filterCategory(cat) {
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  document.querySelector('[data-category="' + cat + '"]').classList.add("active");
+  if (cat === "featured") renderProducts(allProducts.filter(p => p.favorite || p.deal));
+  else if (cat === "all") renderProducts(allProducts);
+  else renderProducts(allProducts.filter(p => p.category === cat));
+}
+function searchProducts(q) { if (!q) filterCategory("featured"); else renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(q.toLowerCase()))); }
+
+function quickAdd(id) {
+  const p = allProducts.find(x => x.id === id);
+  const size = p.size || "Small";
+  const price = p.price;
+  const existing = cart.find(x => x.id === id && x.size === size);
+  if (existing) existing.qty++; else cart.push({ ...p, size, qty: 1, price });
+  updateCartBadge();
+}
+
+function addToCartFromDetail() {
+  const p = allProducts.find(x => x.id === currentProduct);
+  const prices = isArticulated ? sizePricesArt : sizePrices;
+  const price = prices[selectedSize];
+  const existing = cart.find(x => x.id === p.id && x.size === selectedSize && x.art === isArticulated);
+  if (existing) existing.qty += detailQuantity;
+  else cart.push({ id: p.id, name: p.name, price, size: selectedSize, qty: detailQuantity, art: isArticulated });
+  updateCartBadge();
+  closeProductModal();
+}
+
+function updateCartBadge() { document.getElementById("cartBadge").textContent = cart.reduce((a, x) => a + x.qty, 0); }
+
+function toggleCart() { document.getElementById("cartModal").classList.toggle("open"); renderCart(); }
+function renderCart() {
+  const container = document.getElementById("cartItems");
+  if (cart.length === 0) container.innerHTML = "<p style='text-align:center;color:var(--text-light)'>Your cart is empty</p>";
+  else {
+    container.innerHTML = cart.map((p, i) => '<div class="cart-item"><div style="font-size:2rem">' + (p.emoji || '📦') + '</div><div class="cart-item-info"><div class="cart-item-name">' + p.name + '</div><div class="cart-item-size">' + (p.art ? "Articulated " : "") + p.size + ' - $' + p.price + '</div></div><div class="cart-item-qty"><button class="qty-btn" onclick="changeCartQty(' + i + ',-1)">-</button><span>' + p.qty + '</span><button class="qty-btn" onclick="changeCartQty(' + i + ',1)">+</button></div></div>').join("");
+  }
+  document.getElementById("cartTotal").textContent = "$" + cart.reduce((a, x) => a + x.price * x.qty, 0);
+}
+
+function changeCartQty(i, delta) { cart[i].qty += delta; if (cart[i].qty <= 0) cart.splice(i, 1); updateCartBadge(); renderCart(); }
+
+function checkout() {
+  if (cart.length === 0) return alert("Cart is empty!");
+  const total = cart.reduce((a, x) => a + x.price * x.qty, 0);
+  const orderId = "SP" + Date.now();
+  const order = { id: orderId, items: [...cart], total, status: "pending", date: new Date().toLocaleDateString(), email: currentUser?.email || "guest" };
+  orders.push(order);
+  const orderText = cart.map(x => x.qty + "x " + x.name + " (" + (x.art ? "Articulated " : "") + x.size + ")").join("\n");
+  window.open("https://wa.me/447500000000?text=" + encodeURIComponent("Order #" + orderId + "\n\n" + orderText + "\n\nTotal: $" + total));
+  cart = []; updateCartBadge(); renderCart(); closeCart();
+}
+
+function showProductDetail(id) {
+  currentProduct = id;
+  const p = allProducts.find(x => x.id === id);
+  let imgContent;
+  if (p.image) {
+    imgContent = '<img src="' + p.image + '" alt="' + p.name + '" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<span style=&quot;font-size:5rem&quot;>' + (p.emoji || '📦') + '</span>\'">';
+  } else {
+    imgContent = '<span style="font-size:5rem">' + (p.emoji || '📦') + '</span>';
+  }
+  document.getElementById("detailImage").innerHTML = imgContent;
+  document.getElementById("detailName").textContent = p.name;
+  document.getElementById("detailDesc").textContent = p.desc;
+  selectedSize = p.size || "Small";
+  detailQuantity = 1;
+  isArticulated = false;
+  document.getElementById("detailQty").textContent = 1;
+  document.getElementById("artCheck").checked = false;
+  document.getElementById("artToggle").style.display = p.art ? "flex" : "none";
+  updatePrice();
+  document.getElementById("sizeOptions").innerHTML = sizeOrder.map(s => '<button class="size-btn ' + (s === selectedSize ? "active" : "") + '" onclick="selectSize(\'' + s + '\')">' + s.replace("Xtra", "Xtra ") + "</button>").join("");
+  let badges = "";
+  if (p.favorite === "fire") badges += '<span class="badge fire">Popular</span>';
+  if (p.favorite === "worker") badges += '<span class="badge worker">Favorite</span>';
+  if (p.art) badges += '<span class="badge art">Articulated Available</span>';
+  document.getElementById("detailBadges").innerHTML = badges;
+  document.getElementById("aiContent").textContent = "Loading overview...";
+  fetch(RVGPT_URL + "/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "Give a short 2-3 sentence description for a 3D printed " + p.name }) })
+    .then(r => r.json()).then(d => { document.getElementById("aiContent").textContent = d.response || "Modern design, perfect for gifts or personal use. Printed in durable PLA plastic."; })
+    .catch(() => { document.getElementById("aiContent").textContent = "Contact us for more details about this product!"; });
+  document.getElementById("productModal").classList.add("open");
+}
+
+function selectSize(s) { selectedSize = s; updatePrice(); document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("active")); event.target.classList.add("active"); }
+function updatePrice() {
+  isArticulated = document.getElementById("artCheck")?.checked || false;
+  const prices = isArticulated ? sizePricesArt : sizePrices;
+  const p = allProducts.find(x => x.id === currentProduct);
+  document.getElementById("detailPrice").textContent = "$" + (p.price + prices[selectedSize]);
+}
+function changeQty(delta) { detailQuantity = Math.max(1, detailQuantity + delta); document.getElementById("detailQty").textContent = detailQuantity; }
+function closeProductModal() { document.getElementById("productModal").classList.remove("open"); }
+
+function closeModal(e) { if (e.target === e.currentTarget) e.currentTarget.classList.remove("open"); }
+function closeCart() { document.getElementById("cartModal").classList.remove("open"); }
+function closeLoginModal() { document.getElementById("loginModal").classList.remove("open"); }
+function closeOrdersModal() { document.getElementById("ordersModal").classList.remove("open"); }
+function showLoginModal() { document.getElementById("loginModal").classList.add("open"); }
+function closeAdminPanel() { document.getElementById("adminPanel").classList.remove("open"); }
+
+function toggleUserMenu() { document.getElementById("userDropdown").classList.toggle("show"); }
+
+function signInWithGoogle() { auth.signInWithPopup(googleProvider).then(() => closeLoginModal()).catch(e => alert(e.message)); }
+function signInEmail() { alert("Email sign-in would require more setup. Use Google sign-in for now."); }
+function logout() { auth.signOut(); }
+function showOrdersModal() { document.getElementById("ordersModal").classList.add("open"); renderMyOrders(); }
+function renderMyOrders() {
+  const myOrders = orders.filter(o => o.email === currentUser?.email);
+  document.getElementById("ordersList").innerHTML = myOrders.length ? myOrders.map(o => '<div class="order-item"><span class="order-id">#' + o.id + '</span><span class="order-status ' + o.status + '">' + o.status + '</span></div>').join("") : "<p>No orders yet</p>";
+}
+function showAdminPanel() { document.getElementById("adminPanel").classList.add("open"); renderAdminOrders(); }
+
+auth.onAuthStateChanged(user => {
+  currentUser = user;
+  if (user) {
+    document.getElementById("userButton").textContent = user.email?.charAt(0).toUpperCase();
+    document.getElementById("logoutBtn").style.display = "block";
+    document.getElementById("myOrdersBtn").style.display = "block";
+    document.getElementById("adminBtn").style.display = adminEmails.includes(user.email) ? "block" : "none";
+  } else {
+    document.getElementById("userButton").textContent = "Login";
+    document.getElementById("logoutBtn").style.display = "none";
+    document.getElementById("myOrdersBtn").style.display = "none";
+    document.getElementById("adminBtn").style.display = "none";
+  }
+});
+
+function renderAdminOrders() {
+  document.getElementById("adminOrders").innerHTML = orders.slice(-10).reverse().map(o => '<div class="order-item"><span class="order-id">#' + o.id + '</span><span class="order-status ' + o.status + '">' + o.status + '</span></div>').join("") || "<p>No orders</p>";
+}
+
+async function sendAdmin() {
+  const text = document.getElementById("adminInput").value.trim();
+  if (!text) return;
+  const chat = document.getElementById("adminChat");
+  chat.innerHTML += '<div style="margin-bottom:8px"><strong>You:</strong> ' + text + '</div>';
+  document.getElementById("adminInput").value = "";
+  try {
+    const res = await fetch(RVGPT_URL + "/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text }) });
+    const data = await res.json();
+    chat.innerHTML += '<div style="margin-bottom:12px;color:var(--primary)"><strong>AI:</strong> ' + (data.response || "No response") + '</div>';
+    chat.scrollTop = chat.scrollHeight;
+  } catch (e) { chat.innerHTML += '<div>Connection error. Make sure RVGPT is running!</div>'; }
+}
+
+function updateOrderStatus() {
+  const id = document.getElementById("trackerInput").value;
+  const status = document.getElementById("trackerStatus").value;
+  const order = orders.find(o => o.id === id);
+  if (order) { order.status = status; alert("Updated!"); renderAdminOrders(); }
+  else alert("Order not found");
+}
+
+function toggleRVGPTSidebar() { document.getElementById("rvgptSidebar").classList.toggle("open"); }
+
+async function sendRVGPT() {
+  const input = document.getElementById("rvgptInput");
+  const text = input.value.trim();
+  if (!text) return;
+  const msgs = document.getElementById("rvgptMessages");
+  msgs.innerHTML += '<div class="rvgpt-msg user"><div class="rvgpt-avatar">You</div><div class="rvgpt-content">' + text + '</div></div>';
+  input.value = "";
+  msgs.scrollTop = msgs.scrollHeight;
+  try {
+    const res = await fetch(RVGPT_URL + "/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "You are a helpful assistant for Simple Prints 3D printing store. " + text }) });
+    const data = await res.json();
+    msgs.innerHTML += '<div class="rvgpt-msg bot"><div class="rvgpt-avatar">AI</div><div class="rvgpt-content">' + (data.response || "Try again!") + '</div></div>';
+  } catch (e) { msgs.innerHTML += '<div class="rvgpt-msg bot"><div class="rvgpt-avatar">AI</div><div class="rvgpt-content">AI is waking up... try again in a moment!</div></div>'; }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+renderProducts();
+</script>
+</body>
+</html>
