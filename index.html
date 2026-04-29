@@ -60,7 +60,7 @@
     .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .section-title { font-size: 1.3rem; font-weight: 700; color: var(--black); }
     .view-all { font-size: 0.85rem; color: var(--orange); cursor: pointer; font-weight: 500; }
-    .products-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .products-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
 
     .product-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; transition: all 0.25s; cursor: pointer; position: relative; }
     .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
@@ -494,12 +494,25 @@
       currentUser = user;
       const btn = document.getElementById("userBtn");
       if (user) {
-        btn.textContent = user.email.split("@")[0];
+        const name = user.displayName || user.email.split("@")[0];
+        btn.textContent = name.charAt(0).toUpperCase();
+        btn.style.width = "36px";
+        btn.style.height = "36px";
+        btn.style.borderRadius = "50%";
+        btn.style.padding = "0";
+        btn.style.display = "flex";
+        btn.style.alignItems = "center";
+        btn.style.justifyContent = "center";
         document.getElementById("userDropdown").querySelector(".admin-btn").style.display =
           ADMIN_EMAILS.includes(user.email) ? "block" : "none";
         loadFavoritesFromDB();
       } else {
         btn.textContent = "Login";
+        btn.style.width = "";
+        btn.style.height = "";
+        btn.style.borderRadius = "";
+        btn.style.padding = "";
+        btn.style.display = "";
         document.getElementById("userDropdown").querySelector(".admin-btn").style.display = "none";
       }
       updateCartBadge();
@@ -530,13 +543,16 @@
     }
 
     function renderAll() {
-      ["featuredGrid","allGrid","animalsGrid","fidgetsGrid"].forEach(id => document.getElementById(id).innerHTML = "");
+      document.getElementById("featuredGrid").innerHTML = "";
+      document.getElementById("allGrid").innerHTML = "";
+      document.getElementById("animalsGrid").innerHTML = "";
+      document.getElementById("fidgetsGrid").innerHTML = "";
       const featured = products.filter(p => p.badge);
       featured.forEach(p => renderProductCard(p, document.getElementById("featuredGrid")));
       products.forEach(p => renderProductCard(p, document.getElementById("allGrid")));
       products.filter(p => p.category === "Animals").forEach(p => renderProductCard(p, document.getElementById("animalsGrid")));
       products.filter(p => p.category === "Fidgets").forEach(p => renderProductCard(p, document.getElementById("fidgetsGrid")));
-      document.getElementById("featuredSection").style.display = featured.length ? "" : "none";
+      document.getElementById("featuredSection").style.display = featured.length ? "block" : "none";
     }
 
     function filterCategory(cat, btn) {
@@ -801,8 +817,8 @@
       if (!currentUser) { showAuth(); return; }
       if (!ADMIN_EMAILS.includes(currentUser.email)) return alert("Admin access only.");
       document.getElementById("adminModal").classList.add("open");
-      document.getElementById("adminLogin").style.display = isAdmin ? "none" : "";
-      document.getElementById("adminContent").style.display = isAdmin ? "" : "none";
+      document.getElementById("adminLogin").style.display = isAdmin ? "none" : "block";
+      document.getElementById("adminContent").style.display = isAdmin ? "block" : "none";
       if (isAdmin) loadAdminData();
     }
 
