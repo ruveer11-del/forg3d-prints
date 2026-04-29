@@ -34,6 +34,8 @@
     .search-box input { width: 100%; padding: 10px 16px; border: none; border-radius: 25px; font-size: 0.9rem; outline: none; background: #222; color: white; }
     .search-box input::placeholder { color: #888; }
     .header-buttons { display: flex; gap: 10px; align-items: center; }
+    .fav-header-btn { padding: 10px 14px; border: none; border-radius: 25px; background: rgba(255,255,255,0.2); color: #ff6b6b; font-size: 1.1rem; cursor: pointer; font-weight: 700; }
+    .fav-header-btn:hover { background: rgba(255,255,255,0.3); }
     .cart-button { position: relative; padding: 10px 16px; border: none; border-radius: 25px; background: var(--green); color: white; font-size: 0.9rem; cursor: pointer; font-weight: 600; }
     .cart-button:hover { background: var(--green-dark); }
     .cart-badge { position: absolute; top: -6px; right: -6px; background: var(--orange-red); color: white; font-size: 0.7rem; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
@@ -180,6 +182,7 @@
       <input type="text" id="searchInput" placeholder="Search products..." oninput="handleSearch(this.value)">
     </div>
     <div class="header-buttons">
+      <button class="fav-header-btn" onclick="showFavorites()" title="My Favorites">♥ <span id="favCount">0</span></button>
       <button class="cart-button" onclick="toggleCart()">🛒 <span class="cart-badge" id="cartBadge">0</span></button>
       <div class="user-menu">
         <button class="user-button" id="userBtn" onclick="toggleUserMenu()">Login</button>
@@ -624,6 +627,10 @@
       closeModal("productModal");
     }
 
+    function updateFavCount() {
+      document.getElementById("favCount").textContent = favorites.length;
+    }
+
     function updateCartBadge() {
       document.getElementById("cartBadge").textContent = cart.reduce((a, x) => a + x.qty, 0);
     }
@@ -712,11 +719,13 @@
       saveFavorites();
       renderAll();
       renderFavoritesPage();
+      updateFavCount();
     }
 
     function saveFavorites() {
       localStorage.setItem("favorites", JSON.stringify(favorites));
       if (currentUser) db.collection("favorites").doc(currentUser.uid).set({ ids: favorites }).catch(()=>{});
+      updateFavCount();
     }
 
     function loadFavoritesFromDB() {
@@ -957,6 +966,7 @@
     // Init
     renderAll();
     updateCartBadge();
+    updateFavCount();
   </script>
 </body>
 </html>
