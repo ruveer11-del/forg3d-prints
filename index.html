@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forg3d Prints - Custom 3D Printed Products</title>
+  <title>Forg3d Prints - 3D Printed Products</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -11,10 +11,11 @@
   <style>
     :root {
       --black: #111111;
-      --orange-red: #ff5722;
+      --orange: #ff5722;
       --orange-light: #ff7043;
       --green: #22c55e;
       --green-dark: #16a34a;
+      --gold: #fbbf24;
       --text: #1f2937;
       --text-light: #6b7280;
       --bg: #f5f5f5;
@@ -26,19 +27,19 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    /* Header */
-    header { background: var(--black); padding: 12px 24px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    header { background: var(--black); padding: 12px 24px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px; }
     .logo-btn { display: flex; align-items: center; gap: 10px; cursor: pointer; background: none; border: none; }
-    .logo-btn span { color: var(--orange-red); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
-    .search-box { flex: 1; max-width: 400px; }
+    .logo-btn span { color: var(--orange); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
+    .search-box { flex: 1; max-width: 600px; }
     .search-box input { width: 100%; padding: 10px 16px; border: none; border-radius: 25px; font-size: 0.9rem; outline: none; background: #222; color: white; }
     .search-box input::placeholder { color: #888; }
     .header-buttons { display: flex; gap: 10px; align-items: center; }
-    .fav-header-btn { padding: 10px 14px; border: none; border-radius: 25px; background: rgba(255,255,255,0.2); color: #ff6b6b; font-size: 1.1rem; cursor: pointer; font-weight: 700; }
-    .fav-header-btn:hover { background: rgba(255,255,255,0.3); }
+    .fav-header-btn { padding: 10px 14px; border: none; border-radius: 25px; background: rgba(255,255,255,0.15); color: #ff6b6b; font-size: 1.1rem; cursor: pointer; font-weight: 700; position: relative; }
+    .fav-header-btn:hover { background: rgba(255,255,255,0.25); }
+    .fav-count { position: absolute; top: -6px; right: -6px; background: var(--orange); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
     .cart-button { position: relative; padding: 10px 16px; border: none; border-radius: 25px; background: var(--green); color: white; font-size: 0.9rem; cursor: pointer; font-weight: 600; }
     .cart-button:hover { background: var(--green-dark); }
-    .cart-badge { position: absolute; top: -6px; right: -6px; background: var(--orange-red); color: white; font-size: 0.7rem; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
+    .cart-badge { position: absolute; top: -6px; right: -6px; background: var(--orange); color: white; font-size: 0.7rem; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
     .user-menu { position: relative; }
     .user-button { padding: 10px 14px; border: none; border-radius: 25px; background: #222; color: white; font-weight: 600; cursor: pointer; }
     .user-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: none; min-width: 200px; z-index: 200; }
@@ -46,46 +47,40 @@
     .user-dropdown button { width: 100%; padding: 12px 16px; border: none; background: none; text-align: left; font-size: 0.9rem; cursor: pointer; color: var(--text); }
     .user-dropdown button:hover { background: #f3f4f6; }
     .user-dropdown .divider { border-top: 1px solid var(--border); }
-    .user-dropdown .admin-btn { color: var(--orange-red); font-weight: 600; }
+    .user-dropdown .admin-btn { color: var(--orange); font-weight: 600; }
 
-    /* Navigation */
     .navbar { background: white; box-shadow: var(--shadow); padding: 0 24px; overflow-x: auto; }
     .nav-links { display: flex; gap: 8px; max-width: 1400px; margin: 0 auto; padding: 12px 0; }
     .nav-btn { padding: 10px 18px; border: none; border-radius: 25px; background: transparent; font-size: 0.9rem; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: var(--text); }
     .nav-btn:hover { background: #f3f4f6; }
     .nav-btn.active { background: var(--black); color: white; }
 
-    /* Container */
     .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
-
-    /* Section */
     .section { margin-bottom: 40px; }
     .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .section-title { font-size: 1.3rem; font-weight: 700; color: var(--black); }
-    .view-all { font-size: 0.85rem; color: var(--orange-red); cursor: pointer; font-weight: 500; }
+    .view-all { font-size: 0.85rem; color: var(--orange); cursor: pointer; font-weight: 500; }
     .products-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
 
-    /* Product Card */
     .product-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; transition: all 0.25s; cursor: pointer; position: relative; }
     .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
-    .fav-btn { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.9); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s; }
-    .fav-btn:hover { transform: scale(1.1); }
+    .fav-btn { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.9); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s; line-height: 1; }
+    .fav-btn:hover { transform: scale(1.15); background: white; }
     .fav-btn.favorited { color: #ef4444; }
     .product-image { height: 160px; display: flex; align-items: center; justify-content: center; background: #fafafa; padding: 12px; }
     .product-image img { width: 100%; height: 100%; object-fit: contain; }
     .product-info { padding: 14px; }
-    .product-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
-    .product-desc { font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px; line-height: 1.3; }
-    .product-price { font-size: 1.1rem; font-weight: 700; color: var(--orange-red); margin-bottom: 10px; }
-    .add-btn { width: 100%; padding: 10px; border: none; border-radius: 8px; background: var(--black); color: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
-    .add-btn:hover { background: #333; }
     .product-badges { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
     .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
-    .badge.fire { background: #ff6b6b; color: white; }
-    .badge.worker { background: #ff69b4; color: white; }
-    .badge.deal { background: #fbbf24; color: black; }
+    .badge.fire { background: #ef4444; color: white; }
+    .badge.worker { background: #ec4899; color: white; }
+    .badge.deal { background: var(--gold); color: black; }
+    .product-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+    .product-desc { font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px; line-height: 1.3; }
+    .product-price { font-size: 1.1rem; font-weight: 700; color: var(--orange); margin-bottom: 10px; }
+    .add-btn { width: 100%; padding: 10px; border: none; border-radius: 8px; background: var(--black); color: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+    .add-btn:hover { background: #333; }
 
-    /* Full Screen Product Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.open { display: flex; }
     .modal-content { background: white; border-radius: var(--radius); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
@@ -94,11 +89,11 @@
     .close-btn { width: 32px; height: 32px; border: none; background: #f3f4f6; border-radius: 50%; cursor: pointer; font-size: 1rem; }
     .modal-body { padding: 20px; }
     .modal-image { width: 100%; height: 300px; object-fit: contain; background: #fafafa; border-radius: 8px; margin-bottom: 16px; }
-    .modal-price { font-size: 1.5rem; font-weight: 700; color: var(--orange-red); margin-bottom: 12px; }
-    .modal-desc { color: var(--text-light); margin-bottom: 16px; line-height: 1.5; }
+    .modal-price { font-size: 1.5rem; font-weight: 700; color: var(--orange); margin-bottom: 12px; }
+    .modal-desc { color: var(--text-light); margin-bottom: 16px; line-height: 1.5; font-size: 0.9rem; }
     .size-selector { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-    .size-btn { padding: 8px 16px; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-weight: 500; }
-    .size-btn.active { border-color: var(--orange-red); background: var(--orange-red); color: white; }
+    .size-btn { padding: 8px 16px; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
+    .size-btn.active { border-color: var(--orange); background: var(--orange); color: white; }
     .articulated-toggle { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
     .qty-selector { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
     .qty-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--black); color: white; cursor: pointer; font-size: 1rem; }
@@ -106,7 +101,6 @@
     .add-cart-btn { width: 100%; padding: 14px; border: none; border-radius: 8px; background: var(--green); color: white; font-weight: 600; cursor: pointer; font-size: 1rem; }
     .add-cart-btn:hover { background: var(--green-dark); }
 
-    /* Cart Modal */
     #cartModal .modal-content { max-width: 500px; }
     .cart-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
     .cart-item-emoji { font-size: 2rem; }
@@ -118,39 +112,34 @@
     .checkout-btn { width: 100%; padding: 14px; border: none; border-radius: 8px; background: var(--green); color: white; font-weight: 600; cursor: pointer; font-size: 1rem; }
     .empty-cart { text-align: center; padding: 40px; color: var(--text-light); }
 
-    /* Auth Modal */
     #authModal .modal-content { max-width: 400px; }
     .auth-option { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .auth-option:hover { border-color: var(--orange-red); }
+    .auth-option:hover { border-color: var(--orange); }
     .email-input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 0.9rem; margin-bottom: 12px; }
-    .submit-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: var(--orange-red); color: white; font-weight: 600; cursor: pointer; }
+    .submit-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: var(--orange); color: white; font-weight: 600; cursor: pointer; }
 
-    /* Favorites Page */
     #favoritesPage { display: none; }
     #favoritesPage.show { display: block; }
     #mainContent.hide { display: none; }
 
-    /* Custom Print Modal */
     #customPrintModal .modal-content { max-width: 500px; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 6px; }
     .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.9rem; }
     .form-group textarea { resize: vertical; min-height: 80px; }
 
-    /* Admin Panel */
     #adminModal .modal-content { max-width: 600px; }
     .admin-section { margin-bottom: 20px; }
-    .admin-section h3 { font-size: 1rem; margin-bottom: 10px; color: var(--orange-red); }
-    .order-item { padding: 12px; background: #f9fafb; border-radius: 8px; margin-bottom: 8px; }
+    .admin-section h3 { font-size: 1rem; margin-bottom: 10px; color: var(--orange); }
+    .order-item { padding: 12px; background: #f9fafb; border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; }
     .status-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; margin: 2px; }
-    .status-btn.pending { background: #fbbf24; }
+    .status-btn.pending { background: var(--gold); }
     .status-btn.ready { background: var(--green); color: white; }
     .status-btn.picked { background: #3b82f6; color: white; }
     .admin-login { padding: 20px; }
     .admin-login input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; margin-bottom: 12px; font-size: 0.9rem; }
 
-    /* RVGPT Sidebar */
-    .rvgpt-btn { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%; border: none; background: var(--orange-red); color: white; cursor: pointer; box-shadow: 0 4px 12px rgba(255,87,34,0.4); z-index: 50; display: flex; align-items: center; justify-content: center; }
+    .rvgpt-btn { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%; border: none; background: var(--orange); color: white; cursor: pointer; box-shadow: 0 4px 12px rgba(255,87,34,0.4); z-index: 50; display: flex; align-items: center; justify-content: center; }
     .rvgpt-btn img { width: 36px; height: 36px; border-radius: 50%; }
     .rvgpt-sidebar { position: fixed; bottom: 90px; right: 24px; width: 350px; max-height: 500px; background: white; border-radius: var(--radius); box-shadow: 0 8px 30px rgba(0,0,0,0.15); z-index: 50; display: none; flex-direction: column; }
     .rvgpt-sidebar.open { display: flex; }
@@ -159,12 +148,17 @@
     .rvgpt-messages { flex: 1; overflow-y: auto; padding: 16px; max-height: 350px; }
     .rvgpt-msg { margin-bottom: 10px; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; line-height: 1.4; }
     .rvgpt-msg.bot { background: #f3f4f6; }
-    .rvgpt-msg.user { background: var(--orange-red); color: white; margin-left: 20px; }
+    .rvgpt-msg.user { background: var(--orange); color: white; margin-left: 20px; }
+    .rvgpt-msg.bot img { max-width: 100%; border-radius: 8px; margin-top: 8px; }
     .rvgpt-input { display: flex; padding: 12px; border-top: 1px solid var(--border); }
     .rvgpt-input input { flex: 1; padding: 10px; border: 2px solid var(--border); border-radius: 8px 0 0 8px; outline: none; }
-    .rvgpt-input button { padding: 10px 16px; border: none; background: var(--orange-red); color: white; border-radius: 0 8px 8px 0; cursor: pointer; }
+    .rvgpt-input button { padding: 10px 16px; border: none; background: var(--orange); color: white; border-radius: 0 8px 8px 0; cursor: pointer; }
+
+    .no-results { text-align: center; padding: 40px; color: var(--text-light); }
 
     @media (max-width: 768px) {
+      header { flex-wrap: wrap; }
+      .search-box { order: 3; flex-basis: 100%; max-width: 100%; }
       .products-row { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
       .section-title { font-size: 1.1rem; }
       .rvgpt-sidebar { width: calc(100% - 48px); }
@@ -173,7 +167,6 @@
 </head>
 <body>
 
-  <!-- Header -->
   <header>
     <button class="logo-btn" onclick="showSection('all')">
       <span>Forg3d Prints</span>
@@ -182,7 +175,7 @@
       <input type="text" id="searchInput" placeholder="Search products..." oninput="handleSearch(this.value)">
     </div>
     <div class="header-buttons">
-      <button class="fav-header-btn" onclick="showFavorites()" title="My Favorites">♥ <span id="favCount">0</span></button>
+      <button class="fav-header-btn" onclick="showFavorites()" title="My Favorites">♥ <span class="fav-count" id="favCount">0</span></button>
       <button class="cart-button" onclick="toggleCart()">🛒 <span class="cart-badge" id="cartBadge">0</span></button>
       <div class="user-menu">
         <button class="user-button" id="userBtn" onclick="toggleUserMenu()">Login</button>
@@ -197,68 +190,62 @@
     </div>
   </header>
 
-  <!-- Navigation -->
   <nav class="navbar">
     <div class="nav-links">
-      <button class="nav-btn active" onclick="filterCategory('all', this)">All Products</button>
+      <button class="nav-btn active" onclick="filterCategory('all', this)">All</button>
       <button class="nav-btn" onclick="filterCategory('Animals', this)">Animals</button>
       <button class="nav-btn" onclick="filterCategory('Fidgets', this)">Fidgets</button>
       <button class="nav-btn" onclick="filterCategory('Figures', this)">Figures</button>
       <button class="nav-btn" onclick="filterCategory('Vehicles', this)">Vehicles</button>
       <button class="nav-btn" onclick="filterCategory('AirPods', this)">AirPods</button>
       <button class="nav-btn" onclick="filterCategory('Accessories', this)">Accessories</button>
+      <button class="nav-btn" onclick="filterCategory('Keycaps', this)">Keycaps</button>
       <button class="nav-btn" onclick="showCustomPrint()">Custom Print</button>
     </div>
   </nav>
 
-  <!-- Main Content -->
   <div id="mainContent" class="container">
-
-    <!-- Featured Section -->
     <div class="section" id="featuredSection">
       <div class="section-header">
-        <h2 class="section-title">Featured</h2>
+        <h2 class="section-title">🔥 Featured</h2>
       </div>
       <div class="products-row" id="featuredGrid"></div>
     </div>
 
-    <!-- All Products Section -->
     <div class="section" id="allSection">
       <div class="section-header">
         <h2 class="section-title">All Products</h2>
+        <button class="view-all" onclick="filterCategory('all', null)">View All</button>
       </div>
       <div class="products-row" id="allGrid"></div>
     </div>
 
-    <!-- Animals Section -->
     <div class="section" id="animalsSection">
       <div class="section-header">
-        <h2 class="section-title">Animals</h2>
+        <h2 class="section-title">🐾 Animals</h2>
+        <button class="view-all" onclick="filterCategory('Animals', null)">View All</button>
       </div>
       <div class="products-row" id="animalsGrid"></div>
     </div>
 
-    <!-- Fidgets Section -->
     <div class="section" id="fidgetsSection">
       <div class="section-header">
-        <h2 class="section-title">Fidgets</h2>
+        <h2 class="section-title">🌀 Fidgets</h2>
+        <button class="view-all" onclick="filterCategory('Fidgets', null)">View All</button>
       </div>
       <div class="products-row" id="fidgetsGrid"></div>
     </div>
-
   </div>
 
-  <!-- Favorites Page -->
   <div id="favoritesPage" class="container">
     <div class="section-header" style="margin-bottom:20px;">
-      <h2 class="section-title">My Favorites ♥</h2>
+      <h2 class="section-title">♥ My Favorites</h2>
       <button class="view-all" onclick="showSection('all')">Back to Shop</button>
     </div>
     <div class="products-row" id="favoritesGrid"></div>
-    <p id="emptyFavorites" style="text-align:center;color:var(--text-light);padding:40px;display:none;">No favorites yet. Click the ♥ on products to save them!</div>
+    <p id="emptyFavorites" style="text-align:center;color:var(--text-light);padding:40px;display:none;">No favorites yet. Click the ♥ on products to save them!</p>
   </div>
 
-  <!-- Product Detail Modal -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -284,7 +271,6 @@
     </div>
   </div>
 
-  <!-- Cart Modal -->
   <div class="modal-overlay" id="cartModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -299,7 +285,6 @@
     </div>
   </div>
 
-  <!-- Auth Modal -->
   <div class="modal-overlay" id="authModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -317,7 +302,6 @@
     </div>
   </div>
 
-  <!-- Custom Print Modal -->
   <div class="modal-overlay" id="customPrintModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -330,7 +314,7 @@
           <textarea id="customDesc" placeholder="Describe your custom print request..."></textarea>
         </div>
         <div class="form-group">
-          <label>Image URL or reference (optional)</label>
+          <label>Reference Image URL (optional)</label>
           <input id="customImage" type="text" placeholder="https://...">
         </div>
         <button class="submit-btn" onclick="submitCustomPrint()">Submit Request</button>
@@ -339,7 +323,6 @@
     </div>
   </div>
 
-  <!-- Admin Modal -->
   <div class="modal-overlay" id="adminModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -348,7 +331,7 @@
       </div>
       <div class="modal-body">
         <div id="adminLogin" class="admin-login">
-          <h3 style="margin-bottom:12px;color:var(--orange-red);">Admin Access</h3>
+          <h3 style="margin-bottom:12px;color:var(--orange);">Admin Access</h3>
           <input id="adminPass" type="password" placeholder="Enter admin password">
           <button class="submit-btn" onclick="checkAdminPass()">Enter</button>
           <p style="font-size:0.8rem;color:var(--text-light);margin-top:8px;">Contact admin for password.</p>
@@ -371,7 +354,6 @@
     </div>
   </div>
 
-  <!-- Orders Modal -->
   <div class="modal-overlay" id="ordersModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -382,25 +364,18 @@
     </div>
   </div>
 
-  <!-- Netlify Forms (hidden) -->
   <form name="cart-order" netlify hidden>
-    <input type="text" name="name">
-    <input type="email" name="email">
-    <textarea name="order"></textarea>
+    <input type="text" name="name"><input type="email" name="email"><textarea name="order"></textarea>
   </form>
   <form name="custom-print" netlify hidden>
-    <input type="text" name="name">
-    <input type="email" name="email">
-    <textarea name="description"></textarea>
-    <input type="text" name="image">
+    <input type="text" name="name"><input type="email" name="email">
+    <textarea name="description"></textarea><input type="text" name="image">
   </form>
 
-  <!-- RVGPT Button -->
   <button class="rvgpt-btn" onclick="toggleRVGPT()">
     <img src="RV.png" alt="RVGPT" onerror="this.style.display='none';this.parentNode.innerHTML='🤖';">
   </button>
 
-  <!-- RVGPT Sidebar -->
   <div class="rvgpt-sidebar" id="rvgptSidebar">
     <div class="rvgpt-header">
       <img src="RV.png" alt="RV" onerror="this.style.display='none';">
@@ -416,21 +391,18 @@
   </div>
 
   <script>
-    // Firebase Config - API key is safe in frontend Firebase code
     const firebaseConfig = {
       apiKey: "AIzaSyCkxvDFA_1WLA-JbQO91EKC8Le_hQR6yF4",
       authDomain: "simple-print-6fc4a.firebaseapp.com",
       projectId: "simple-print-6fc4a",
       storageBucket: "simple-print-6fc4a.firebasestorage.app",
       messagingSenderId: "420956912281",
-      appId: "1:420956912281:web:5afbe3bde16b63e980d608",
-      measurementId: "G-QRQWF7WHYH"
+      appId: "1:420956912281:web:5afbe3bde16b63e980d608"
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Admin config
     const ADMIN_PASS = "123456789";
     const ADMIN_EMAILS = [
       "ruveer123@gmail.com",
@@ -440,41 +412,74 @@
       "soundguy3500@gmail.com"
     ];
 
-    // Products
     const products = [
-      { id: 1, name: "Soccer Ball", desc: "Classic soccer ball, perfect for sports lovers", price: 2, category: "Vehicles", emoji: "⚽", image: "soccer.png", badge: "fire", art: true },
-      { id: 2, name: "Football", desc: "American football with detailed stitching", price: 2, category: "Vehicles", emoji: "🏈", image: "football.png", badge: "fire" },
-      { id: 3, name: "Phone Stand", desc: "Adjustable phone stand for all devices", price: 3, category: "Accessories", emoji: "📱", image: "phone.png" },
-      { id: 4, name: "Fidget Spinner", desc: "Smooth spinning fidget toy", price: 2, category: "Fidgets", emoji: "🌀", image: "fidget.png", badge: "fire" },
-      { id: 5, name: "Button Fidget", desc: "Clicky button fidget for stress relief", price: 2, category: "Fidgets", emoji: "🔘", image: "button fidget.png" },
-      { id: 6, name: "Switch Fidget", desc: "Flip switch fidget toy", price: 2, category: "Fidgets", emoji: "🔛", image: "switch fidget.png" },
-      { id: 7, name: "Seal", desc: "Cute articulated seal figure", price: 3, category: "Animals", emoji: "🦭", image: "seal.png", art: true, badge: "worker" },
-      { id: 8, name: "Dragon", desc: "Articulated dragon with movable joints", price: 3, category: "Animals", emoji: "🐉", image: "dragon.png", art: true, badge: "fire" },
-      { id: 9, name: "Among Us", desc: "Crewmate from Among Us game", price: 2, category: "Figures", emoji: "👾", image: "among us.png", badge: "deal" },
-      { id: 10, name: "AirPods Case", desc: "Protective case for AirPods", price: 4, category: "AirPods", emoji: "🎧", image: "airpods.png" },
-      { id: 11, name: "AirPods Pro Case", desc: "Protective case for AirPods Pro", price: 4, category: "AirPods", emoji: "🎧", image: "airpods 2.png" },
-      { id: 12, name: "RV Figure", desc: "Custom RV vehicle figure", price: 3, category: "Vehicles", emoji: "🚐", image: "RV.png" },
-      { id: 13, name: "Cat", desc: "Articulated cat with movable parts", price: 3, category: "Animals", emoji: "🐱", art: true },
-      { id: 14, name: "Dog", desc: "Articulated dog figure", price: 3, category: "Animals", emoji: "🐕", art: true },
-      { id: 15, name: "Dinosaur", desc: "T-Rex articulated dinosaur", price: 4, category: "Animals", emoji: "🦖", art: true, badge: "fire" },
-      { id: 16, name: "Octopus", desc: "Articulated octopus with tentacles", price: 3, category: "Animals", emoji: "🐙", art: true },
-      { id: 17, name: "Pop Fidget", desc: "Classic bubble pop fidget toy", price: 2, category: "Fidgets", emoji: "🫧", badge: "deal" },
-      { id: 18, name: "Infinity Cube", desc: "Foldable infinity cube fidget", price: 3, category: "Fidgets", emoji: "♾️" },
-      { id: 19, name: "Worry Stone", desc: "Smooth stone fidget for anxiety", price: 2, category: "Fidgets", emoji: "🪨" },
-      { id: 20, name: "Minecraft Figure", desc: "Creeper from Minecraft", price: 3, category: "Figures", emoji: "🧱", badge: "fire" },
-      { id: 21, name: "Pokemon Ball", desc: "Pokeball replica", price: 3, category: "Figures", emoji: "⚾" },
-      { id: 22, name: "Car", desc: "Sports car model", price: 4, category: "Vehicles", emoji: "🚗", badge: "deal" },
-      { id: 23, name: "Airplane", desc: "Model airplane with details", price: 4, category: "Vehicles", emoji: "✈️" },
-      { id: 24, name: "Keychain", desc: "Custom name keychain", price: 2, category: "Accessories", emoji: "🔑" },
-      { id: 25, name: "Ring Holder", desc: "Phone ring stand holder", price: 2, category: "Accessories", emoji: "💍" },
-      { id: 26, name: "Cable Holder", desc: "Desk cable organizer", price: 2, category: "Accessories", emoji: "🔌" }
-    ];
-
-    const sizes = [
-      { name: "Small", price: 0 },
-      { name: "Medium", price: 2 },
-      { name: "Large", price: 8 },
-      { name: "XLarge", price: 28 }
+      { id: 1, name: "Man Figure", desc: "3 in tall man figure", price: 3, category: "Figures", emoji: "👨", size: "Small" },
+      { id: 2, name: "Mini Among Us Figure", desc: "2 in tall Among Us crewmate", price: 3, category: "Figures", emoji: "👾", badge: "worker" },
+      { id: 3, name: "Man Figure (Joints)", desc: "3 in tall articulated man", price: 5, category: "Figures", emoji: "🤸", art: true },
+      { id: 4, name: "Mini Boat", desc: "2 in long mini boat", price: 2, category: "Vehicles", emoji: "🚢", size: "Small" },
+      { id: 5, name: "Mini Airplane", desc: "2 in long airplane", price: 2, category: "Vehicles", emoji: "✈️", size: "Small" },
+      { id: 6, name: "Mini F1 Racecar", desc: "2 in long F1 car", price: 2, category: "Vehicles", emoji: "🏎️", size: "Small" },
+      { id: 7, name: "Mini Helicopter", desc: "2 in long 1 in tall helicopter", price: 2, category: "Vehicles", emoji: "🚁", size: "Small" },
+      { id: 8, name: "Mini Motorcycle", desc: "2 in long 1 in tall motorcycle", price: 2, category: "Vehicles", emoji: "🏍️", size: "Small" },
+      { id: 9, name: "Pen/Pencil Holder", desc: "4 in tall fits all pens", price: 4, category: "Accessories", emoji: "✏️", size: "KindaSmall" },
+      { id: 10, name: "Customizable Pencil Cap", desc: "1 in tall custom cap", price: 1, category: "Accessories", emoji: "📝", size: "XtraSmall" },
+      { id: 11, name: "Cube", desc: "1x1x1 inch cube", price: 2, category: "Figures", emoji: "📦", size: "Small" },
+      { id: 12, name: "Mini Soccer Ball", desc: "1 in tall soccer ball", price: 2, category: "Vehicles", emoji: "⚽", badge: "worker", size: "XtraSmall" },
+      { id: 13, name: "Mini Football", desc: "1.5 in tall 3 in wide football", price: 3, category: "Vehicles", emoji: "🏈", badge: "fire", size: "KindaSmall" },
+      { id: 14, name: "Mini Baseball", desc: "1 in tall baseball", price: 2, category: "Vehicles", emoji: "⚾", size: "XtraSmall" },
+      { id: 15, name: "Mini Hockey Puck", desc: "2 in long 2 in wide puck", price: 2, category: "Vehicles", emoji: "🏒", size: "XtraSmall" },
+      { id: 16, name: "Mini Volleyball", desc: "1 in tall volleyball", price: 2, category: "Vehicles", emoji: "🏐", size: "XtraSmall" },
+      { id: 17, name: "Mini Dodgers Hat", desc: "2 in tall hat", price: 2, category: "Accessories", emoji: "🧢", size: "Small" },
+      { id: 18, name: "Phone Stand", desc: "Fits all phones", price: 3, category: "Accessories", emoji: "📱", size: "KindaSmall" },
+      { id: 19, name: "Controller Stand", desc: "Fits Playstation controllers", price: 5, category: "Accessories", emoji: "🎮", size: "Medium" },
+      { id: 20, name: "Headphone Stand", desc: "Fits all headphones", price: 5, category: "Accessories", emoji: "🎧", size: "Medium" },
+      { id: 21, name: "Button Fidget", desc: "1 in tall 1 in wide button fidget", price: 2, category: "Fidgets", emoji: "🔘", badge: "fire", size: "XtraSmall" },
+      { id: 22, name: "Switch Fidget", desc: "1 in wide switch fidget", price: 2, category: "Fidgets", emoji: "🔛", size: "XtraSmall" },
+      { id: 23, name: "Mini Sword", desc: "3 in long 1 in wide sword", price: 3, category: "Figures", emoji: "⚔️", size: "Medium" },
+      { id: 24, name: "Useless Scrap Plastic", desc: "1x1x1 scrap plastic", price: 0.25, category: "Fidgets", emoji: "🗑️", size: "XtraSmall" },
+      { id: 25, name: "Rectangle Container (Small)", desc: "3W x 5H x 3L inches with lid", price: 5, category: "Accessories", emoji: "📦", size: "KindaSmall" },
+      { id: 26, name: "Rectangle Container (Med)", desc: "4W x 6H x 4L inches with lid", price: 9, category: "Accessories", emoji: "📦", size: "Medium" },
+      { id: 27, name: "Rectangle Container (Large)", desc: "5W x 7H x 5L inches with lid", price: 13, category: "Accessories", emoji: "📦", size: "Large" },
+      { id: 28, name: "Baby Potato", desc: "2 in tall with face, arms, legs", price: 5, category: "Figures", emoji: "🥔", size: "Small" },
+      { id: 29, name: "Rick Astley Figure", desc: "3 in tall articulated - Never gonna give you up!", price: 4, category: "Figures", emoji: "🎤", art: true },
+      { id: 30, name: "Seal (Unarticulated)", desc: "2 in long 1 in tall", price: 2, category: "Animals", emoji: "🦭", size: "Small" },
+      { id: 31, name: "Seal (Articulated)", desc: "2 in long 1 in tall articulated", price: 3, category: "Animals", emoji: "🦭", badge: "worker", art: true, size: "Small" },
+      { id: 32, name: "Turtle (Unarticulated)", desc: "2 in long 2 in wide", price: 2, category: "Animals", emoji: "🐢", size: "Small" },
+      { id: 33, name: "Turtle (Articulated)", desc: "2 in long 2 in wide articulated", price: 3, category: "Animals", emoji: "🐢", art: true, size: "Small" },
+      { id: 34, name: "Cat", desc: "2 in long 1 in tall", price: 2, category: "Animals", emoji: "🐱", size: "Small" },
+      { id: 35, name: "Dog", desc: "2 in long 1 in tall", price: 2, category: "Animals", emoji: "🐕", size: "Small" },
+      { id: 36, name: "Frog", desc: "2 in tall 2 in wide", price: 2, category: "Animals", emoji: "🐸", size: "Small" },
+      { id: 37, name: "Duck", desc: "1 in tall", price: 2, category: "Animals", emoji: "🦆", size: "Small" },
+      { id: 38, name: "Octopus (Unarticulated)", desc: "2x2x2 inches", price: 2, category: "Animals", emoji: "🐙", size: "Small" },
+      { id: 39, name: "Octopus (Articulated)", desc: "2x2x2 inches articulated", price: 3, category: "Animals", emoji: "🐙", art: true, size: "Small" },
+      { id: 40, name: "Axolotl (Unarticulated)", desc: "2 in long 1 in tall", price: 2, category: "Animals", emoji: "🦎", size: "Small" },
+      { id: 41, name: "Axolotl (Articulated)", desc: "2 in long 1 in tall articulated", price: 3, category: "Animals", emoji: "🦎", art: true, size: "Small" },
+      { id: 42, name: "Shark (Unarticulated)", desc: "2 in long 1 in tall", price: 2, category: "Animals", emoji: "🦈", size: "Small" },
+      { id: 43, name: "Shark (Articulated)", desc: "2 in long 1 in tall articulated", price: 3, category: "Animals", emoji: "🦈", art: true, size: "Small" },
+      { id: 44, name: "Snake (Unarticulated)", desc: "3 in long 0.5 in wide", price: 2, category: "Animals", emoji: "🐍", size: "Small" },
+      { id: 45, name: "Snake (Articulated)", desc: "3 in long 0.5 in wide articulated", price: 3, category: "Animals", emoji: "🐍", art: true, size: "Small" },
+      { id: 46, name: "Dragon (Unarticulated)", desc: "2 in long 1 in tall 2 in wide with wings", price: 2, category: "Animals", emoji: "🐉", size: "Small" },
+      { id: 47, name: "Dragon (Articulated)", desc: "2 in long 1 in tall 2 in wide with wings articulated", price: 3, category: "Animals", emoji: "🐉", art: true, size: "Small" },
+      { id: 48, name: "Medium Animal (Unarticulated)", desc: "4 in long 2 in tall (4 in wide with wings)", price: 4, category: "Animals", emoji: "🐾", size: "Medium" },
+      { id: 49, name: "Medium Animal (Articulated)", desc: "4 in long 2 in tall (4 in wide with wings) articulated", price: 5, category: "Animals", emoji: "🐾", art: true, size: "Medium" },
+      { id: 50, name: "Large Animal (Unarticulated)", desc: "5 in tall 5 in wide", price: 10, category: "Animals", emoji: "🦏", size: "Large" },
+      { id: 51, name: "Large Animal (Articulated)", desc: "5 in tall 5 in wide articulated", price: 13, category: "Animals", emoji: "🦏", art: true, size: "Large" },
+      { id: 52, name: "Big Boi Animal (Unarticulated)", desc: "9 in tall 9 in wide", price: 30, category: "Animals", emoji: "🐘", badge: "worker", size: "XtraLarge" },
+      { id: 53, name: "Big Boi Animal (Articulated)", desc: "9 in tall 9 in wide articulated", price: 35, category: "Animals", emoji: "🐘", badge: "worker", art: true, size: "XtraLarge" },
+      { id: 54, name: "Mix N Match Small Animals (3 items)", desc: "2 in long 1 in tall each", price: 5, category: "Animals", emoji: "🎁", size: "Small" },
+      { id: 55, name: "Mix N Match (2+1 Articulated)", desc: "2 in long 1 in tall each", price: 6, category: "Animals", emoji: "🎁", size: "Small" },
+      { id: 56, name: "Mix N Match (1+2 Articulated)", desc: "2 in long 1 in tall each", price: 7, category: "Animals", emoji: "🎁", size: "Small" },
+      { id: 57, name: "Custom Nametag", desc: "$2 + $1 per letter - fits your name", price: 2, category: "Keycaps", emoji: "🔤" },
+      { id: 58, name: "Custom Animal Keycap", desc: "0.5x0.5x0.5 inches", price: 2, category: "Keycaps", emoji: "🎹", size: "XtraSmall" },
+      { id: 59, name: "Custom Letter Keycap", desc: "0.5x0.5x0.5 inches", price: 2, category: "Keycaps", emoji: "⌨️", size: "XtraSmall" },
+      { id: 60, name: "The Rocktopus (Articulated)", desc: "3x3x3 inches", price: 7, category: "Animals", emoji: "🪨", art: true, size: "KindaSmall" },
+      { id: 61, name: "Big Boi Deal (1 Big + 1 Small 50% Off)", desc: "DEAL - Articulated", price: 38, category: "Animals", emoji: "💎", badge: "deal", art: true },
+      { id: 62, name: "Chap Stick Holder", desc: "1x1x1 - You WILL remember your chapstick!", price: 1, category: "Accessories", emoji: "💄", size: "XtraSmall" },
+      { id: 63, name: "Mini Poop", desc: "0.25 in tall", price: 0.50, category: "Figures", emoji: "💩", size: "XtraXtraSmall" },
+      { id: 64, name: "The Rockatoo on Branch", desc: "2 in tall", price: 4, category: "Animals", emoji: "🦜", size: "Small" },
+      { id: 65, name: "Minecraft Chest AirPods Case", desc: "Fits AirPods Pro", price: 2, category: "AirPods", emoji: "🎮", size: "Small" },
+      { id: 66, name: "Fortnite Ammo Box AirPods Case", desc: "Fits AirPods Pro", price: 2, category: "AirPods", emoji: "🎯", size: "Small" },
+      { id: 67, name: "AirPods Pro Honeycomb Case", desc: "Fits AirPods Pro", price: 2, category: "AirPods", emoji: "🍯", size: "Small" }
     ];
 
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -485,7 +490,6 @@
     let modalQty = 1;
     let isAdmin = false;
 
-    // Auth state
     auth.onAuthStateChanged(user => {
       currentUser = user;
       const btn = document.getElementById("userBtn");
@@ -499,14 +503,18 @@
         document.getElementById("userDropdown").querySelector(".admin-btn").style.display = "none";
       }
       updateCartBadge();
+      updateFavCount();
     });
 
-    // Render functions
     function renderProductCard(p, container) {
       const isFav = favorites.includes(p.id);
-      const imgSrc = p.image ? p.image : "";
-      const imgContent = imgSrc ? `<img src="${imgSrc}" alt="${p.name}" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=font-size:3rem>${p.emoji||"📦"}</span>';">` : `<span style="font-size:3rem">${p.emoji||"📦"}</span>`;
-      const badges = p.badge ? `<span class="badge ${p.badge}">${p.badge==="fire"?"🔥Popular":p.badge==="worker"?"♥Favorite":"⚡Deal"}</span>` : "";
+      const imgContent = p.image
+        ? `<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=font-size:3rem>${p.emoji||"📦"}</span>';">`
+        : `<span style="font-size:3rem">${p.emoji||"📦"}</span>`;
+      let badges = "";
+      if (p.badge === "fire") badges = '<span class="badge fire">🔥 Fan Favorite</span>';
+      else if (p.badge === "worker") badges = '<span class="badge worker">♥️ Worker\'s Favorite</span>';
+      else if (p.badge === "deal") badges = '<span class="badge deal">⚡ Deal</span>';
       container.innerHTML += `
         <div class="product-card" onclick="showProductDetail(${p.id})">
           <button class="fav-btn ${isFav?"favorited":""}" onclick="event.stopPropagation();toggleFavorite(${p.id})">${isFav?"♥":"♡"}</button>
@@ -515,48 +523,35 @@
             <div class="product-badges">${badges}</div>
             <div class="product-name">${p.name}</div>
             <div class="product-desc">${p.desc}</div>
-            <div class="product-price">$${p.price}</div>
+            <div class="product-price">$${p.price}${p.price % 1 !== 0 ? "":""}</div>
             <button class="add-btn" onclick="event.stopPropagation();quickAdd(${p.id})">Add to Cart</button>
           </div>
         </div>`;
     }
 
     function renderAll() {
-      document.getElementById("featuredGrid").innerHTML = "";
-      document.getElementById("allGrid").innerHTML = "";
-      document.getElementById("animalsGrid").innerHTML = "";
-      document.getElementById("fidgetsGrid").innerHTML = "";
-
-      products.forEach(p => {
-        if (p.badge) renderProductCard(p, document.getElementById("featuredGrid"));
-        renderProductCard(p, document.getElementById("allGrid"));
-        if (p.category === "Animals") renderProductCard(p, document.getElementById("animalsGrid"));
-        if (p.category === "Fidgets") renderProductCard(p, document.getElementById("fidgetsGrid"));
-      });
-
-      if (!document.getElementById("featuredGrid").innerHTML) {
-        document.getElementById("featuredSection").style.display = "none";
-      }
+      ["featuredGrid","allGrid","animalsGrid","fidgetsGrid"].forEach(id => document.getElementById(id).innerHTML = "");
+      const featured = products.filter(p => p.badge);
+      featured.forEach(p => renderProductCard(p, document.getElementById("featuredGrid")));
+      products.forEach(p => renderProductCard(p, document.getElementById("allGrid")));
+      products.filter(p => p.category === "Animals").forEach(p => renderProductCard(p, document.getElementById("animalsGrid")));
+      products.filter(p => p.category === "Fidgets").forEach(p => renderProductCard(p, document.getElementById("fidgetsGrid")));
+      document.getElementById("featuredSection").style.display = featured.length ? "" : "none";
     }
 
     function filterCategory(cat, btn) {
       document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
       if (btn) btn.classList.add("active");
-      if (cat === "all") {
-        showSection("all");
-        return;
-      }
-      document.getElementById("mainContent").classList.add("hide");
+      document.getElementById("mainContent").classList.remove("hide");
       document.getElementById("favoritesPage").classList.remove("show");
-      // Create filtered view
-      const container = document.getElementById("allGrid");
-      container.innerHTML = "";
-      products.filter(p => p.category === cat).forEach(p => renderProductCard(p, container));
-      document.getElementById("allSection").querySelector(".section-title").textContent = cat;
-      document.getElementById("allSection").style.display = "block";
       document.getElementById("featuredSection").style.display = "none";
       document.getElementById("animalsSection").style.display = "none";
       document.getElementById("fidgetsSection").style.display = "none";
+      if (cat === "all") { showSection("all"); return; }
+      document.getElementById("allSection").querySelector(".section-title").textContent = cat;
+      document.getElementById("allGrid").innerHTML = "";
+      products.filter(p => p.category === cat).forEach(p => renderProductCard(p, document.getElementById("allGrid")));
+      document.getElementById("allSection").style.display = "block";
     }
 
     function showSection(section) {
@@ -571,29 +566,24 @@
       document.querySelectorAll(".nav-btn").forEach((b,i) => b.classList.toggle("active", i===0));
     }
 
-    // Product Detail
     function showProductDetail(id) {
       selectedProduct = products.find(p => p.id === id);
       if (!selectedProduct) return;
       document.getElementById("modalTitle").textContent = selectedProduct.name;
       const imgEl = document.getElementById("modalImage");
-      if (selectedProduct.image) {
-        imgEl.src = selectedProduct.image;
-        imgEl.style.display = "";
-      } else {
-        imgEl.style.display = "none";
-      }
+      if (selectedProduct.image) { imgEl.src = selectedProduct.image; imgEl.style.display = ""; }
+      else { imgEl.style.display = "none"; }
       document.getElementById("modalDesc").textContent = selectedProduct.desc;
       document.getElementById("articulatedToggle").style.display = selectedProduct.art ? "" : "none";
       document.getElementById("artCheckbox").checked = false;
       modalQty = 1;
       document.getElementById("modalQty").textContent = modalQty;
-
       const sizeContainer = document.getElementById("sizeSelector");
-      sizeContainer.innerHTML = sizes.map((s, i) =>
-        `<button class="size-btn ${i===0?"active":""}" onclick="selectSize(${i},this)">${s.name} ($${selectedProduct.price+s.price})</button>`
+      const sizes = ["XtraSmall","Small","KindaSmall","Medium","Large","XtraLarge"];
+      sizeContainer.innerHTML = sizes.map((s,i) =>
+        `<button class="size-btn ${i===1?"active":""}" onclick="selectSize(${i},this)">${s}</button>`
       ).join("");
-      selectedSize = 0;
+      selectedSize = 1;
       updateModalPrice();
       document.getElementById("productModal").classList.add("open");
     }
@@ -607,8 +597,8 @@
 
     function updateModalPrice() {
       if (!selectedProduct) return;
-      const base = selectedProduct.price + sizes[selectedSize].price;
-      const total = document.getElementById("artCheckbox").checked ? base + 1 : base;
+      const base = selectedProduct.price;
+      const total = document.getElementById("artCheckbox").checked && selectedProduct.art ? base + 1 : base;
       document.getElementById("modalPrice").textContent = "$" + total;
     }
 
@@ -617,12 +607,11 @@
       document.getElementById("modalQty").textContent = modalQty;
     }
 
-    // Cart
     function quickAdd(id) {
       if (!currentUser) { showAuth(); return; }
       const p = products.find(x => x.id === id);
       if (!p) return;
-      cart.push({ id: p.id, name: p.name, price: p.price, size: "Small", art: false, qty: 1, emoji: p.emoji, image: p.image });
+      cart.push({ id: p.id, name: p.name, price: p.price, size: p.size||"Small", art: false, qty: 1, emoji: p.emoji, image: p.image });
       updateCartBadge();
       saveCart();
     }
@@ -631,31 +620,26 @@
       if (!currentUser) { closeModal("productModal"); showAuth(); return; }
       if (!selectedProduct) return;
       const art = document.getElementById("artCheckbox").checked;
-      const size = sizes[selectedSize];
-      const price = selectedProduct.price + size.price + (art ? 1 : 0);
+      const price = selectedProduct.art && art ? selectedProduct.price + 1 : selectedProduct.price;
       for (let i = 0; i < modalQty; i++) {
-        cart.push({ id: selectedProduct.id, name: selectedProduct.name, price, size: size.name, art, qty: 1, emoji: selectedProduct.emoji, image: selectedProduct.image });
+        cart.push({ id: selectedProduct.id, name: selectedProduct.name, price, size: selectedProduct.size||"Small", art, qty: 1, emoji: selectedProduct.emoji, image: selectedProduct.image });
       }
       updateCartBadge();
       saveCart();
       closeModal("productModal");
     }
 
-    function updateFavCount() {
-      document.getElementById("favCount").textContent = favorites.length;
-    }
-
     function updateCartBadge() {
       document.getElementById("cartBadge").textContent = cart.reduce((a, x) => a + x.qty, 0);
     }
 
-    function saveCart() { localStorage.setItem("cart", JSON.stringify(cart)); }
-
-    function toggleCart() {
-      renderCart();
-      document.getElementById("cartModal").classList.toggle("open");
+    function updateFavCount() {
+      document.getElementById("favCount").textContent = favorites.length;
     }
 
+    function saveCart() { localStorage.setItem("cart", JSON.stringify(cart)); }
+
+    function toggleCart() { renderCart(); document.getElementById("cartModal").classList.toggle("open"); }
     function closeCart() { document.getElementById("cartModal").classList.remove("open"); }
 
     function renderCart() {
@@ -678,8 +662,7 @@
             <button class="qty-btn" onclick="changeCartQty(${i},1)">+</button>
           </div>
         </div>`).join("");
-      const total = cart.reduce((a, x) => a + x.price * x.qty, 0);
-      document.getElementById("cartTotal").textContent = "Total: $" + total;
+      document.getElementById("cartTotal").textContent = "Total: $" + cart.reduce((a, x) => a + x.price * x.qty, 0);
     }
 
     function changeCartQty(i, delta) {
@@ -693,8 +676,6 @@
       if (cart.length === 0) return alert("Cart is empty!");
       const orderDetails = cart.map(p => `${p.qty}x ${p.name} (${p.size}${p.art?" Articulated":""}) - $${p.price}`).join("\n");
       const total = cart.reduce((a, x) => a + x.price * x.qty, 0);
-
-      // Submit to Netlify Form
       const form = document.createElement("form");
       form.name = "cart-order";
       form.netlify = "true";
@@ -702,26 +683,20 @@
       form.innerHTML = `
         <input name="name" value="${currentUser.email}">
         <input name="email" value="${currentUser.email}">
-        <textarea name="order">Order:\n${orderDetails}\n\nTotal: $${total}\nCustomer: ${currentUser.email}</textarea>
-      `;
+        <textarea name="order">Order:\n${orderDetails}\n\nTotal: $${total}\nCustomer: ${currentUser.email}</textarea>`;
       document.body.appendChild(form);
-      const formData = new FormData(form);
-      fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(formData).toString() })
+      fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(new FormData(form)).toString() })
         .then(() => {
-          alert("Order placed! Total: $" + total + "\nCash on pickup. We'll email you at " + currentUser.email);
-          cart = [];
-          updateCartBadge(); saveCart(); renderCart(); closeCart();
+          alert(`Order placed! Total: $${total}\nCash on pickup. We'll email you at ${currentUser.email}`);
+          cart = []; updateCartBadge(); saveCart(); renderCart(); closeCart();
         })
         .catch(() => {
-          // Fallback
-          alert("Order placed! Total: $" + total + "\nCash on pickup.");
-          cart = [];
-          updateCartBadge(); saveCart(); renderCart(); closeCart();
+          alert(`Order placed! Total: $${total}\nCash on pickup.`);
+          cart = []; updateCartBadge(); saveCart(); renderCart(); closeCart();
         });
       document.body.removeChild(form);
     }
 
-    // Favorites
     function toggleFavorite(id) {
       if (!currentUser) { showAuth(); return; }
       const idx = favorites.indexOf(id);
@@ -759,10 +734,7 @@
     function renderFavoritesPage() {
       const grid = document.getElementById("favoritesGrid");
       grid.innerHTML = "";
-      if (favorites.length === 0) {
-        document.getElementById("emptyFavorites").style.display = "block";
-        return;
-      }
+      if (favorites.length === 0) { document.getElementById("emptyFavorites").style.display = "block"; return; }
       document.getElementById("emptyFavorites").style.display = "none";
       favorites.forEach(id => {
         const p = products.find(x => x.id === id);
@@ -770,15 +742,12 @@
       });
     }
 
-    // Auth
     function showAuth() { document.getElementById("authModal").classList.add("open"); }
     function toggleUserMenu() { document.getElementById("userDropdown").classList.toggle("show"); }
 
     function signInWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).then(() => {
-        closeModal("authModal");
-      }).catch(err => alert(err.message));
+      auth.signInWithPopup(provider).then(() => closeModal("authModal")).catch(err => alert(err.message));
     }
 
     function signInWithEmail() {
@@ -796,7 +765,6 @@
       isAdmin = false;
     }
 
-    // Custom Print
     function showCustomPrint() {
       if (!currentUser) { showAuth(); return; }
       document.getElementById("customDesc").value = "";
@@ -808,14 +776,10 @@
       if (!currentUser) return;
       const desc = document.getElementById("customDesc").value.trim();
       if (!desc) return alert("Please describe what you need printed.");
-      // Spam/inappropriate filter
-      const badWords = ["spam","hack","virus","inappropriate","badword"];
-      const lowerDesc = desc.toLowerCase();
-      if (badWords.some(w => lowerDesc.includes(w))) return alert("Your request contains inappropriate content.");
+      const badWords = ["spam","hack","virus","inappropriate"];
+      if (badWords.some(w => desc.toLowerCase().includes(w))) return alert("Your request contains inappropriate content.");
       if (desc.length > 500) return alert("Description too long. Keep it under 500 characters.");
-
       const img = document.getElementById("customImage").value;
-      // Submit to Netlify Form
       const form = document.createElement("form");
       form.name = "custom-print";
       form.netlify = "true";
@@ -824,31 +788,15 @@
         <input name="name" value="${currentUser.email}">
         <input name="email" value="${currentUser.email}">
         <textarea name="description">${desc}</textarea>
-        <input name="image" value="${img}">
-      `;
+        <input name="image" value="${img}">`;
       document.body.appendChild(form);
       fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(new FormData(form)).toString() })
-        .then(() => {
-          alert("Custom print request submitted! Admin will review and email you.");
-          closeModal("customPrintModal");
-        })
-        .catch(() => {
-          alert("Request submitted!");
-          closeModal("customPrintModal");
-        });
+        .then(() => { alert("Custom print request submitted! Admin will review and email you."); closeModal("customPrintModal"); })
+        .catch(() => { alert("Request submitted!"); closeModal("customPrintModal"); });
       document.body.removeChild(form);
-
-      // Save to Firestore for admin
-      db.collection("customPrints").add({
-        user: currentUser.email,
-        description: desc,
-        image: img,
-        status: "pending",
-        created: new Date()
-      }).catch(()=>{});
+      db.collection("customPrints").add({ user: currentUser.email, description: desc, image: img, status: "pending", created: new Date() }).catch(()=>{});
     }
 
-    // Admin
     function showAdmin() {
       if (!currentUser) { showAuth(); return; }
       if (!ADMIN_EMAILS.includes(currentUser.email)) return alert("Admin access only.");
@@ -859,79 +807,40 @@
     }
 
     function checkAdminPass() {
-      const pass = document.getElementById("adminPass").value;
-      if (pass === ADMIN_PASS) {
+      if (document.getElementById("adminPass").value === ADMIN_PASS) {
         isAdmin = true;
         document.getElementById("adminLogin").style.display = "none";
         document.getElementById("adminContent").style.display = "";
         loadAdminData();
-      } else {
-        alert("Wrong password");
-      }
+      } else alert("Wrong password");
     }
 
     function loadAdminData() {
-      // Load orders
-      db.collection("orders").orderBy("created", "desc").limit(20).get().then(snap => {
-        const container = document.getElementById("adminOrders");
-        if (snap.empty) { container.innerHTML = "<p>No orders yet.</p>"; return; }
-        container.innerHTML = "";
-        snap.forEach(doc => {
-          const o = doc.data();
-          container.innerHTML += `<div class="order-item"><strong>${o.user}</strong><br>${o.details}<br><small>${o.created?.toDate?.()?.toLocaleString()||""}</small></div>`;
-        });
-      }).catch(() => {
-        document.getElementById("adminOrders").innerHTML = "<p>Login with admin email to view orders.</p>";
-      });
-
-      // Load custom prints
       db.collection("customPrints").where("status","==","pending").get().then(snap => {
         const container = document.getElementById("adminCustomPrints");
         if (snap.empty) { container.innerHTML = "<p>No pending requests.</p>"; return; }
         container.innerHTML = "";
         snap.forEach(doc => {
           const p = doc.data();
-          container.innerHTML += `
-            <div class="order-item">
-              <strong>${p.user}</strong><br>
-              ${p.description}<br>
-              ${p.image?`<a href="${p.image}" target="_blank">View Image</a><br>`:""}
-              <button class="status-btn ready" onclick="approveCustomPrint('${doc.id}')">Approve</button>
-              <button class="status-btn picked" onclick="denyCustomPrint('${doc.id}')">Deny</button>
-            </div>`;
+          container.innerHTML += `<div class="order-item"><strong>${p.user}</strong><br>${p.description}<br>${p.image?`<a href="${p.image}" target="_blank">View Image</a><br>`:""}<button class="status-btn ready" onclick="approveCustomPrint('${doc.id}')">Approve</button><button class="status-btn picked" onclick="denyCustomPrint('${doc.id}')">Deny</button></div>`;
         });
       });
     }
 
-    function approveCustomPrint(id) {
-      db.collection("customPrints").doc(id).update({ status: "approved" }).then(() => loadAdminData());
-    }
+    function approveCustomPrint(id) { db.collection("customPrints").doc(id).update({ status: "approved" }).then(() => loadAdminData()); }
+    function denyCustomPrint(id) { db.collection("customPrints").doc(id).update({ status: "denied" }).then(() => loadAdminData()); }
 
-    function denyCustomPrint(id) {
-      db.collection("customPrints").doc(id).update({ status: "denied" }).then(() => loadAdminData());
-    }
-
-    // Orders
     function showOrders() {
       if (!currentUser) { showAuth(); return; }
       db.collection("orders").where("user","==",currentUser.email).orderBy("created","desc").get().then(snap => {
         const container = document.getElementById("ordersContent");
-        if (snap.empty) { container.innerHTML = "<p>No orders yet.</p>"; return; }
-        container.innerHTML = "";
-        snap.forEach(doc => {
-          const o = doc.data();
-          container.innerHTML += `<div class="order-item"><strong>Order #${doc.id}</strong><br>${o.details}<br><small>${o.created?.toDate?.()?.toLocaleString()||""}</small></div>`;
-        });
-      }).catch(() => {
-        document.getElementById("ordersContent").innerHTML = "<p>Orders will appear here after checkout.</p>";
-      });
+        container.innerHTML = snap.empty ? "<p>No orders yet.</p>" : "";
+        snap.forEach(doc => { const o = doc.data(); container.innerHTML += `<div class="order-item"><strong>Order #${doc.id}</strong><br>${o.details}<br><small>${o.created?.toDate?.()?.toLocaleString()||""}</small></div>`; });
+      }).catch(() => { document.getElementById("ordersContent").innerHTML = "<p>Orders will appear here after checkout.</p>"; });
       document.getElementById("ordersModal").classList.add("open");
     }
 
-    // RVGPT
-    function toggleRVGPT() {
-      document.getElementById("rvgptSidebar").classList.toggle("open");
-    }
+    function toggleRVGPT() { document.getElementById("rvgptSidebar").classList.toggle("open"); }
 
     function sendRVGPT() {
       const input = document.getElementById("rvgptInput");
@@ -940,28 +849,28 @@
       const messages = document.getElementById("rvgptMessages");
       messages.innerHTML += `<div class="rvgpt-msg user">${msg}</div>`;
       input.value = "";
-
-      // Find matching product
-      const product = products.find(p => p.name.toLowerCase().includes(msg.toLowerCase()) || p.desc.toLowerCase().includes(msg.toLowerCase()));
+      const product = products.find(p => p.name.toLowerCase().includes(msg.toLowerCase()) || p.desc.toLowerCase().includes(msg.toLowerCase()) || p.category.toLowerCase().includes(msg.toLowerCase()));
       setTimeout(() => {
         if (product) {
-          const imgHtml = product.image ? `<br><img src="${product.image}" style="width:100%;max-height:150px;object-fit:contain;border-radius:8px;margin-top:8px;" onerror="this.style.display='none';">` : "";
-          messages.innerHTML += `<div class="rvgpt-msg bot">We have <strong>${product.name}</strong>! ${product.desc}<br>Price starts at $${product.price}.${imgHtml}</div>`;
+          const imgHtml = product.image ? `<br><img src="${product.image}" alt="${product.name}">` : "";
+          messages.innerHTML += `<div class="rvgpt-msg bot">We have <strong>${product.name}</strong>! ${product.desc}<br>Price: $${product.price}${imgHtml}</div>`;
         } else {
-          messages.innerHTML += `<div class="rvgpt-msg bot">I'd be happy to help! We have various 3D printed items. You can also request a <a href="#" onclick="toggleRVGPT();showCustomPrint();return false;">custom print</a> if you don't see what you need.</div>`;
+          messages.innerHTML += `<div class="rvgpt-msg bot">I'd be happy to help! We have ${products.length} products. You can also request a <a href="#" onclick="toggleRVGPT();showCustomPrint();return false;">custom print</a> if you don't see what you need.</div>`;
         }
         messages.scrollTop = messages.scrollHeight;
       }, 500);
-      messages.scrollTop = messages.scrollHeight;
     }
 
-    // Search
     function handleSearch(val) {
       if (!val) { renderAll(); return; }
       const q = val.toLowerCase();
       const matches = products.filter(p => p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
       document.getElementById("allGrid").innerHTML = "";
-      matches.forEach(p => renderProductCard(p, document.getElementById("allGrid")));
+      if (matches.length === 0) {
+        document.getElementById("allGrid").innerHTML = '<div class="no-results">No products found. <a href="#" onclick="toggleRVGPT();showCustomPrint();return false;">Request a custom print?</a></div>';
+      } else {
+        matches.forEach(p => renderProductCard(p, document.getElementById("allGrid")));
+      }
       document.getElementById("allSection").querySelector(".section-title").textContent = "Search Results";
       document.getElementById("allSection").style.display = "block";
       document.getElementById("featuredSection").style.display = "none";
@@ -969,15 +878,12 @@
       document.getElementById("fidgetsSection").style.display = "none";
     }
 
-    // Close modals
     function closeModal(id) { document.getElementById(id).classList.remove("open"); }
 
-    // Close dropdowns on outside click
     document.addEventListener("click", e => {
       if (!e.target.closest(".user-menu")) document.getElementById("userDropdown").classList.remove("show");
     });
 
-    // Init
     renderAll();
     updateCartBadge();
     updateFavCount();
