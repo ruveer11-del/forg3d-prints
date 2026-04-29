@@ -194,13 +194,13 @@
 
   <nav class="navbar">
     <div class="nav-links">
-      <button class="nav-btn active" onclick="filterCategory('Animals', this)">Animals</button>
-      <button class="nav-btn" onclick="filterCategory('Fidgets', this)">Fidgets</button>
-      <button class="nav-btn" onclick="filterCategory('Figures', this)">Figures</button>
-      <button class="nav-btn" onclick="filterCategory('Vehicles', this)">Vehicles</button>
-      <button class="nav-btn" onclick="filterCategory('AirPods', this)">AirPods</button>
-      <button class="nav-btn" onclick="filterCategory('Accessories', this)">Accessories</button>
-      <button class="nav-btn" onclick="filterCategory('Keycaps', this)">Keycaps</button>
+      <button class="nav-btn active" onclick='filterCategory("Animals", this)'>Animals</button>
+      <button class="nav-btn" onclick='filterCategory("Fidgets", this)'>Fidgets</button>
+      <button class="nav-btn" onclick='filterCategory("Figures", this)'>Figures</button>
+      <button class="nav-btn" onclick='filterCategory("Vehicles", this)'>Vehicles</button>
+      <button class="nav-btn" onclick='filterCategory("AirPods", this)'>AirPods</button>
+      <button class="nav-btn" onclick='filterCategory("Accessories", this)'>Accessories</button>
+      <button class="nav-btn" onclick='filterCategory("Keycaps", this)'>Keycaps</button>
       <button class="nav-btn" onclick="showCustomPrint()">Custom Print</button>
     </div>
   </nav>
@@ -217,7 +217,7 @@
     <div class="section" id="animalsSection">
       <div class="section-header">
         <h2 class="section-title">🐾 Animals</h2>
-        <button class="view-all" onclick="filterCategory('Animals', null)">View All</button>
+        <button class="view-all" onclick='filterCategory("Animals", null)'>View All</button>
       </div>
       <div class="products-grid" id="animalsGrid"></div>
     </div>
@@ -225,7 +225,7 @@
     <div class="section" id="fidgetsSection">
       <div class="section-header">
         <h2 class="section-title">🌀 Fidgets</h2>
-        <button class="view-all" onclick="filterCategory('Fidgets', null)">View All</button>
+        <button class="view-all" onclick='filterCategory("Fidgets", null)'>View All</button>
       </div>
       <div class="products-grid" id="fidgetsGrid"></div>
     </div>
@@ -233,7 +233,7 @@
     <div class="section" id="figuresSection">
       <div class="section-header">
         <h2 class="section-title">🎭 Figures</h2>
-        <button class="view-all" onclick="filterCategory('Figures', null)">View All</button>
+        <button class="view-all" onclick='filterCategory("Figures", null)'>View All</button>
       </div>
       <div class="products-grid" id="figuresGrid"></div>
     </div>
@@ -241,7 +241,7 @@
     <div class="section" id="vehiclesSection">
       <div class="section-header">
         <h2 class="section-title">🚗 Vehicles</h2>
-        <button class="view-all" onclick="filterCategory('Vehicles', null)">View All</button>
+        <button class="view-all" onclick='filterCategory("Vehicles", null)'>View All</button>
       </div>
       <div class="products-grid" id="vehiclesGrid"></div>
     </div>
@@ -249,7 +249,7 @@
     <div class="section" id="airpodsSection">
       <div class="section-header">
         <h2 class="section-title">🎧 AirPods</h2>
-        <button class="view-all" onclick="filterCategory('AirPods', null)">View All</button>
+        <button class="view-all" onclick='filterCategory("AirPods", null)'>View All</button>
       </div>
       <div class="products-grid" id="airpodsGrid"></div>
     </div>
@@ -257,7 +257,7 @@
     <div class="section" id="accessoriesSection">
       <div class="section-header">
         <h2 class="section-title">📱 Accessories</h2>
-        <button class="view-all" onclick="filterCategory('Accessories', null)">View All</button>
+        <button class="view-all" onclick='filterCategory("Accessories", null)'>View All</button>
       </div>
       <div class="products-grid" id="accessoriesGrid"></div>
     </div>
@@ -265,7 +265,7 @@
     <div class="section" id="keycapsSection">
       <div class="section-header">
         <h2 class="section-title">⌨️ Keycaps</h2>
-        <button class="view-all" onclick="filterCategory('Keycaps', null)">View All</button>
+        <button class="view-all" onclick='filterCategory("Keycaps", null)'>View All</button>
       </div>
       <div class="products-grid" id="keycapsGrid"></div>
     </div>
