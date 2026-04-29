@@ -205,8 +205,6 @@
     </div>
   </nav>
 
-  <div id="mainContent" class="container">
-
     <div class="section" id="featuredSection">
       <div class="section-header">
         <h2 class="section-title">🔥 Featured</h2>
@@ -216,7 +214,7 @@
 
     <div class="section" id="animalsSection">
       <div class="section-header">
-        <h2 class="section-title">🐾 Animals</h2>
+        <h2 class="section-title">Animals</h2>
         <button class="view-all" onclick='filterCategory("Animals", null)'>View All</button>
       </div>
       <div class="products-grid" id="animalsGrid"></div>
@@ -224,7 +222,7 @@
 
     <div class="section" id="fidgetsSection">
       <div class="section-header">
-        <h2 class="section-title">🌀 Fidgets</h2>
+        <h2 class="section-title">Fidgets</h2>
         <button class="view-all" onclick='filterCategory("Fidgets", null)'>View All</button>
       </div>
       <div class="products-grid" id="fidgetsGrid"></div>
@@ -232,7 +230,7 @@
 
     <div class="section" id="figuresSection">
       <div class="section-header">
-        <h2 class="section-title">🎭 Figures</h2>
+        <h2 class="section-title">Figures</h2>
         <button class="view-all" onclick='filterCategory("Figures", null)'>View All</button>
       </div>
       <div class="products-grid" id="figuresGrid"></div>
@@ -240,7 +238,7 @@
 
     <div class="section" id="vehiclesSection">
       <div class="section-header">
-        <h2 class="section-title">🚗 Vehicles</h2>
+        <h2 class="section-title">Vehicles</h2>
         <button class="view-all" onclick='filterCategory("Vehicles", null)'>View All</button>
       </div>
       <div class="products-grid" id="vehiclesGrid"></div>
@@ -248,7 +246,7 @@
 
     <div class="section" id="airpodsSection">
       <div class="section-header">
-        <h2 class="section-title">🎧 AirPods</h2>
+        <h2 class="section-title">AirPods</h2>
         <button class="view-all" onclick='filterCategory("AirPods", null)'>View All</button>
       </div>
       <div class="products-grid" id="airpodsGrid"></div>
@@ -256,7 +254,7 @@
 
     <div class="section" id="accessoriesSection">
       <div class="section-header">
-        <h2 class="section-title">📱 Accessories</h2>
+        <h2 class="section-title">Accessories</h2>
         <button class="view-all" onclick='filterCategory("Accessories", null)'>View All</button>
       </div>
       <div class="products-grid" id="accessoriesGrid"></div>
@@ -264,11 +262,71 @@
 
     <div class="section" id="keycapsSection">
       <div class="section-header">
-        <h2 class="section-title">⌨️ Keycaps</h2>
+        <h2 class="section-title">Keycaps</h2>
         <button class="view-all" onclick='filterCategory("Keycaps", null)'>View All</button>
       </div>
       <div class="products-grid" id="keycapsGrid"></div>
     </div>
+      <div class="products-grid" id="featuredGrid"></div>
+    </div>
+
+    <div class="section" id="animalsSection">
+      <div class="section-header">
+        <h2 class="section-title">Animals</h2>
+        <button class="view-all" onclick='filterCategory("Animals", null)'>View All</button>
+      </div>
+      <div class="products-grid" id="animalsGrid"></div>
+    </div>
+
+    <div class="section" id="fidgetsSection">
+      <div class="section-header">
+        <h2 class="section-title">Fidgets</h2>
+        <button class="view-all" onclick='filterCategory("Fidgets", null)'>View All</button>
+      </div>
+      <div class="products-grid" id="fidgetsGrid"></div>
+    </div>
+
+    <div class="section" id="figuresSection">
+      <div class="section-header">
+        <h2 class="section-title">Figures</h2>
+        <button class="view-all" onclick='filterCategory("Figures", null)'>View All</button>
+      </div>
+      <div class="products-grid" id="figuresGrid"></div>
+    </div>
+
+    <div class="section" id="vehiclesSection">
+      <div class="section-header">
+        <h2 class="section-title">Vehicles</h2>
+        <button class="view-all" onclick='filterCategory("Vehicles", null)'>View All</button>
+      </div>
+      <div class="products-grid" id="vehiclesGrid"></div>
+    </div>
+
+    <div class="section" id="airpodsSection">
+      <div class="section-header">
+        <h2 class="section-title">AirPods</h2>
+        <button class="view-all" onclick='filterCategory("AirPods", null)'>View All</button>
+      </div>
+      <div class="products-grid" id="airpodsGrid"></div>
+    </div>
+
+    <div class="section" id="accessoriesSection">
+      <div class="section-header">
+        <h2 class="section-title">Accessories</h2>
+        <button class="view-all" onclick='filterCategory("Accessories", null)'>View All</button>
+      </div>
+      <div class="products-grid" id="accessoriesGrid"></div>
+    </div>
+
+    <div class="section" id="keycapsSection">
+      <div class="section-header">
+        <h2 class="section-title">Keycaps</h2>
+        <button class="view-all" onclick='filterCategory("Keycaps", null)'>View All</button>
+      </div>
+      <div class="products-grid" id="keycapsGrid"></div>
+    </div>
+
+  </div>
 
   </div>
 
@@ -583,8 +641,8 @@
       ["featuredGrid","animalsGrid","fidgetsGrid","figuresGrid","vehiclesGrid","airpodsGrid","accessoriesGrid","keycapsGrid"].forEach(id => {
         document.getElementById(id).innerHTML = "";
       });
-      const featured = products.filter(p => p.badge);
-      featured.forEach(p => renderProductCard(p, document.getElementById("featuredGrid")));
+      // Featured shows ALL products
+      products.forEach(p => renderProductCard(p, document.getElementById("featuredGrid")));
       products.filter(p => p.category === "Animals").forEach(p => renderProductCard(p, document.getElementById("animalsGrid")));
       products.filter(p => p.category === "Fidgets").forEach(p => renderProductCard(p, document.getElementById("fidgetsGrid")));
       products.filter(p => p.category === "Figures").forEach(p => renderProductCard(p, document.getElementById("figuresGrid")));
@@ -592,18 +650,17 @@
       products.filter(p => p.category === "AirPods").forEach(p => renderProductCard(p, document.getElementById("airpodsGrid")));
       products.filter(p => p.category === "Accessories").forEach(p => renderProductCard(p, document.getElementById("accessoriesGrid")));
       products.filter(p => p.category === "Keycaps").forEach(p => renderProductCard(p, document.getElementById("keycapsGrid")));
-      document.getElementById("featuredSection").style.display = featured.length ? "block" : "none";
+      document.getElementById("featuredSection").style.display = "block";
     }
 
     function filterCategory(cat, btn) {
       document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
       if (btn) btn.classList.add("active");
-      document.getElementById("mainContent").classList.remove("hide");
-      document.getElementById("favoritesPage").classList.remove("show");
       // Hide all sections
       ["featuredSection","animalsSection","fidgetsSection","figuresSection","vehiclesSection","airpodsSection","accessoriesSection","keycapsSection"].forEach(id => {
         document.getElementById(id).style.display = "none";
       });
+      document.getElementById("favoritesPage").classList.remove("show");
       // Show selected category
       const sectionMap = {
         "Animals": "animalsSection",
@@ -859,6 +916,7 @@
       if (!currentUser) { showAuth(); return; }
       if (!ADMIN_EMAILS.includes(currentUser.email)) return alert("Admin access only.");
       document.getElementById("adminModal").classList.add("open");
+      // Only show password field for admin emails
       document.getElementById("adminLogin").style.display = isAdmin ? "none" : "block";
       document.getElementById("adminContent").style.display = isAdmin ? "block" : "none";
       if (isAdmin) loadAdminData();
