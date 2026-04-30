@@ -10,77 +10,77 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <style>
     :root {
-      --black: #111111;
-      --orange: #ff5722;
-      --orange-light: #ff7043;
-      --green: #22c55e;
-      --green-dark: #16a34a;
-      --gold: #fbbf24;
-      --text: #1f2937;
-      --text-light: #6b7280;
-      --bg: #f5f5f5;
+      --black: #131921;
+      --orange: #ff9900;
+      --orange-hover: #e68a00;
+      --yellow: #ffc107;
+      --green: #067d62;
+      --green-dark: #056a54;
+      --text: #0f1111;
+      --text-light: #565959;
+      --bg: #eaeded;
       --card-bg: #ffffff;
-      --border: #e5e7eb;
-      --shadow: 0 2px 12px rgba(0,0,0,0.08);
-      --radius: 12px;
+      --border: #d5d9d9;
+      --shadow: 0 2px 5px rgba(15,17,17,0.15);
+      --radius: 8px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
     header { background: var(--black); padding: 12px 24px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px; }
     .logo-btn { display: flex; align-items: center; gap: 10px; cursor: pointer; background: none; border: none; }
-    .logo-btn span { color: var(--orange); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
-    .search-box { flex: 1; max-width: 600px; }
-    .search-box input { width: 100%; padding: 10px 16px; border: none; border-radius: 25px; font-size: 0.9rem; outline: none; background: #222; color: white; }
-    .search-box input::placeholder { color: #888; }
+    .logo-btn span { color: var(--orange); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+    .search-box { flex: 1; max-width: 700px; }
+    .search-box input { width: 100%; padding: 10px 16px; border: none; border-radius: 4px; font-size: 0.95rem; outline: none; background: white; color: var(--text); }
+    .search-box input::placeholder { color: #999; }
     .header-buttons { display: flex; gap: 10px; align-items: center; }
-    .fav-header-btn { padding: 10px 14px; border: none; border-radius: 25px; background: rgba(255,255,255,0.15); color: #ff6b6b; font-size: 1.1rem; cursor: pointer; font-weight: 700; position: relative; }
-    .fav-header-btn:hover { background: rgba(255,255,255,0.25); }
+    .fav-header-btn { padding: 8px 12px; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; background: transparent; color: #ff6b6b; font-size: 1.1rem; cursor: pointer; font-weight: 700; position: relative; transition: all 0.2s; }
+    .fav-header-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
     .fav-count { position: absolute; top: -6px; right: -6px; background: var(--orange); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
-    .cart-button { position: relative; padding: 10px 16px; border: none; border-radius: 25px; background: var(--green); color: white; font-size: 0.9rem; cursor: pointer; font-weight: 600; }
-    .cart-button:hover { background: var(--green-dark); }
+    .cart-button { position: relative; padding: 8px 16px; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; background: transparent; color: white; font-size: 0.9rem; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+    .cart-button:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
     .cart-badge { position: absolute; top: -6px; right: -6px; background: var(--orange); color: white; font-size: 0.7rem; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
     .user-menu { position: relative; }
-    .user-button { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--orange); color: white; font-weight: 700; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
-    .user-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: none; min-width: 200px; z-index: 200; }
+    .user-button { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--orange); background: var(--orange); color: white; font-weight: 700; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .user-button:hover { transform: scale(1.05); }
+    .user-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: none; min-width: 220px; z-index: 200; }
     .user-dropdown.show { display: block; }
-    .user-dropdown button { width: 100%; padding: 12px 16px; border: none; background: none; text-align: left; font-size: 0.9rem; cursor: pointer; color: var(--text); }
-    .user-dropdown button:hover { background: #f3f4f6; }
-    .user-dropdown .divider { border-top: 1px solid var(--border); }
+    .user-dropdown button { width: 100%; padding: 12px 16px; border: none; background: none; text-align: left; font-size: 0.9rem; cursor: pointer; color: var(--text); border-bottom: 1px solid #f0f0f0; }
+    .user-dropdown button:hover { background: #f7fafa; }
     .user-dropdown .admin-btn { color: var(--orange); font-weight: 600; }
 
-    .navbar { background: white; box-shadow: var(--shadow); padding: 0 24px; overflow-x: auto; }
+    .navbar { background: #232f3e; padding: 0 24px; overflow-x: auto; }
     .nav-links { display: flex; gap: 8px; max-width: 1400px; margin: 0 auto; padding: 12px 0; }
-    .nav-btn { padding: 10px 18px; border: none; border-radius: 25px; background: transparent; font-size: 0.9rem; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: var(--text); }
-    .nav-btn:hover { background: #f3f4f6; }
-    .nav-btn.active { background: var(--black); color: white; }
+    .nav-btn { padding: 10px 18px; border: none; border-radius: 4px; background: transparent; font-size: 0.9rem; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: white; }
+    .nav-btn:hover { background: rgba(255,255,255,0.1); }
+    .nav-btn.active { background: var(--orange); color: var(--black); font-weight: 600; }
 
-    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
-    .section { margin-bottom: 40px; }
-    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .section-title { font-size: 1.3rem; font-weight: 700; color: var(--black); }
-    .view-all { font-size: 0.85rem; color: var(--orange); cursor: pointer; font-weight: 500; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    .section { margin-bottom: 30px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    .section-title { font-size: 1.4rem; font-weight: 700; color: var(--text); }
+    .view-all { font-size: 0.85rem; color: #007185; cursor: pointer; font-weight: 500; text-decoration: underline; }
+    .view-all:hover { color: var(--orange); }
 
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
 
-    .product-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; transition: all 0.25s; cursor: pointer; position: relative; }
-    .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
-    .fav-btn { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.9); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s; line-height: 1; }
-    .fav-btn:hover { transform: scale(1.15); background: white; }
-    .fav-btn.favorited { color: #ef4444; }
-    .product-image { height: 200px; display: flex; align-items: center; justify-content: center; background: #fafafa; padding: 16px; }
+    .product-card { background: var(--card-bg); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; transition: all 0.25s; cursor: pointer; position: relative; }
+    .product-card:hover { box-shadow: 0 4px 12px rgba(15,17,17,0.15); transform: translateY(-2px); }
+    .fav-btn { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.95); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .fav-btn:hover { transform: scale(1.1); background: white; }
+    .fav-btn.favorited { color: #e41b23; }
+    .product-image { height: 220px; display: flex; align-items: center; justify-content: center; background: white; padding: 16px; border-bottom: 1px solid var(--border); }
     .product-image img { width: 100%; height: 100%; object-fit: contain; }
-    .product-info { padding: 14px; }
-    .product-badges { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
-    .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
-    .badge.fire { background: #ef4444; color: white; }
+    .product-info { padding: 16px; }
+    .product-badges { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 4px; font-weight: 600; }
+    .badge.fire { background: #e41b23; color: white; }
     .badge.worker { background: #ec4899; color: white; }
-    .badge.deal { background: var(--gold); color: black; }
-    .product-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
-    .product-desc { font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px; line-height: 1.3; }
-    .product-price { font-size: 1.1rem; font-weight: 700; color: var(--orange); margin-bottom: 10px; }
-    .add-btn { width: 100%; padding: 10px; border: none; border-radius: 8px; background: var(--black); color: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
-    .add-btn:hover { background: #333; }
+    .badge.deal { background: var(--yellow); color: var(--black); }
+    .product-name { font-size: 1rem; font-weight: 600; margin-bottom: 6px; color: #007185; }
+    .product-price { font-size: 1.3rem; font-weight: 700; color: #b12704; margin-bottom: 12px; }
+    .add-btn { width: 100%; padding: 10px; border: none; border-radius: 20px; background: var(--orange); color: var(--black); font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .add-btn:hover { background: var(--orange-hover); }
 
     /* Modals */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -380,22 +380,28 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="authModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Sign In</h2>
-        <button class="close-btn" onclick="closeModal('authModal')">X</button>
-      </div>
-      <div class="modal-body" style="text-align:center;">
-        <button class="auth-option" onclick="signInWithGoogle()">🔍 Sign in with Google</button>
-        <div style="margin:16px 0;color:var(--text-light);">or</div>
-        <input class="email-input" id="authEmail" type="email" placeholder="Email">
-        <input class="email-input" id="authPassword" type="password" placeholder="Password">
-        <button class="submit-btn" onclick="signInWithEmail()">Sign In with Email</button>
-        <p style="font-size:0.8rem;color:var(--text-light);margin-top:12px;">No account? Just enter your email and password to sign up.</p>
+    <div class="modal-overlay" id="authModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Sign In</h2>
+          <button class="close-btn" onclick="closeModal('authModal')">X</button>
+        </div>
+        <div class="modal-body" style="text-align:center; padding: 24px;">
+          <p style="color:var(--text-light); margin-bottom: 20px; font-size: 0.95rem;">Sign in to add items to your cart, favorite products, and request custom prints.</p>
+          <button class="auth-option" onclick="signInWithGoogle()" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; margin: 12px 0; border: 2px solid var(--border); border-radius: 4px; background: white; cursor: pointer; font-weight: 500; transition: all 0.2s;">
+            <span style="font-size: 1.2rem;">G</span> Sign in with Google
+          </button>
+          <div style="margin: 20px 0; color: var(--text-light); font-size: 0.9rem; position: relative;">
+            <span style="background: white; padding: 0 10px; position: relative; z-index: 1;">or</span>
+            <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); z-index: 0;"></div>
+          </div>
+          <input class="email-input" id="authEmail" type="email" placeholder="Email" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem; margin-bottom: 12px; outline: none; transition: border-color 0.2s;">
+          <input class="email-input" id="authPassword" type="password" placeholder="Password" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem; margin-bottom: 16px; outline: none; transition: border-color 0.2s;">
+          <button class="submit-btn" onclick="signInWithEmail()" style="width: 100%; padding: 12px; border: none; border-radius: 4px; background: var(--orange); color: var(--black); font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: background 0.2s;">Sign In</button>
+          <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 16px;">No account? Just enter your email and password to create one.</p>
+        </div>
       </div>
     </div>
-  </div>
 
     <div class="modal-overlay" id="customPrintModal">
     <div class="modal-content">
@@ -881,7 +887,9 @@
 
     function signInWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).then(() => closeModal("authModal")).catch(err => alert(err.message));
+      auth.signInWithPopup(provider).then(() => {
+        closeModal("authModal");
+      }).catch(err => alert(err.message));
     }
 
     function signInWithEmail() {
