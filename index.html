@@ -397,12 +397,22 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="customPrintModal">
+    <div class="modal-overlay" id="customPrintModal">
     <div class="modal-content">
       <div class="modal-header">
         <h2>Custom Print Request</h2>
         <button class="close-btn" onclick="closeModal('customPrintModal')">X</button>
       </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>What do you need printed?</label>
+          <textarea id="customDesc" placeholder="Describe your custom print request (e.g., 'Dragon with wings, 6 inches tall')"></textarea>
+        </div>
+        <button class="submit-btn" onclick="submitCustomPrint()">Submit Request</button>
+        <p style="font-size:0.8rem;color:var(--text-light);margin-top:8px;">Custom prints take 5-7 business days. Admin will review and email you.</p>
+      </div>
+    </div>
+  </div>
       <div class="modal-body">
         <div class="form-group">
           <label>Description of what you need</label>
@@ -625,12 +635,11 @@
       else if (p.badge === "deal") badges = '<span class="badge deal">⚡ Deal</span>';
       container.innerHTML += `
         <div class="product-card" onclick="showProductDetail(${p.id})">
-          <button class="fav-btn ${isFav?"favorited":""}" onclick="event.stopPropagation();toggleFavorite(${p.id})">${isFav?"♥":"♡"}</button>
+          <button class="fav-btn ${isFav?"favorited":""}" onclick="event.stopPropagation();toggleFavorite(${p.id})"><span style="font-size:1.2rem;">${isFav?"♥":"♡"}</span></button>
           <div class="product-image">${imgContent}</div>
           <div class="product-info">
             <div class="product-badges">${badges}</div>
             <div class="product-name">${p.name}</div>
-            <div class="product-desc">${p.desc}</div>
             <div class="product-price">$${p.price}${p.price % 1 !== 0 ? "":""}</div>
             <button class="add-btn" onclick="event.stopPropagation();quickAdd(${p.id})">Add to Cart</button>
           </div>
@@ -904,7 +913,6 @@
       const badWords = ["spam","hack","virus","inappropriate"];
       if (badWords.some(w => desc.toLowerCase().includes(w))) return alert("Your request contains inappropriate content.");
       if (desc.length > 500) return alert("Description too long. Keep it under 500 characters.");
-      const img = document.getElementById("customImage").value;
       const form = document.createElement("form");
       form.name = "custom-print";
       form.netlify = "true";
@@ -912,14 +920,13 @@
       form.innerHTML = `
         <input name="name" value="${currentUser.email}">
         <input name="email" value="${currentUser.email}">
-        <textarea name="description">${desc}</textarea>
-        <input name="image" value="${img}">`;
+        <textarea name="description">${desc}</textarea>`;
       document.body.appendChild(form);
       fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(new FormData(form)).toString() })
         .then(() => { alert("Custom print request submitted! Admin will review and email you."); closeModal("customPrintModal"); })
         .catch(() => { alert("Request submitted!"); closeModal("customPrintModal"); });
       document.body.removeChild(form);
-      db.collection("customPrints").add({ user: currentUser.email, description: desc, image: img, status: "pending", created: new Date() }).catch(()=>{});
+      db.collection("customPrints").add({ user: currentUser.email, description: desc, status: "pending", created: new Date() }).catch(()=>{});
     }
 
     function showAdmin() {
