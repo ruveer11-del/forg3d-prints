@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forg3d Prints - 3D Printed Products</title>
+  <title>Forg3D Prints - 3D Printed Products</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -77,8 +77,10 @@
     .badge.fire { background: #e41b23; color: white; }
     .badge.worker { background: #ec4899; color: white; }
     .badge.deal { background: var(--yellow); color: var(--black); }
+    .badge.discount { background: #10b981; color: white; }
     .product-name { font-size: 1rem; font-weight: 600; margin-bottom: 6px; color: #007185; }
     .product-price { font-size: 1.3rem; font-weight: 700; color: #b12704; margin-bottom: 12px; }
+    .original-price { text-decoration: line-through; color: var(--text-light); font-size: 0.9rem; margin-right: 8px; }
     .add-btn { width: 100%; padding: 10px; border: none; border-radius: 20px; background: var(--orange); color: var(--black); font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
     .add-btn:hover { background: var(--orange-hover); }
 
@@ -171,7 +173,7 @@
 
   <header>
     <button class="logo-btn" onclick="showSection('Animals')">
-      <span>Forg3d Prints</span>
+      <span>Forg3D Prints</span>
     </button>
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="Search products..." oninput="handleSearch(this.value)">
@@ -205,6 +207,7 @@
     </div>
   </nav>
 
+  <div class="container" id="mainContent">
     <div class="section" id="featuredSection">
       <div class="section-header">
         <h2 class="section-title">🔥 Featured</h2>
@@ -212,6 +215,13 @@
       <div class="products-grid" id="featuredGrid"></div>
     </div>
 
+    <div class="section" id="popularSection">
+      <div class="section-header">
+        <h2 class="section-title">⭐ Popular right now</h2>
+      </div>
+      <div class="products-grid" id="popularGrid"></div>
+    </div>
+
     <div class="section" id="animalsSection">
       <div class="section-header">
         <h2 class="section-title">Animals</h2>
@@ -267,67 +277,6 @@
       </div>
       <div class="products-grid" id="keycapsGrid"></div>
     </div>
-      <div class="products-grid" id="featuredGrid"></div>
-    </div>
-
-    <div class="section" id="animalsSection">
-      <div class="section-header">
-        <h2 class="section-title">Animals</h2>
-        <button class="view-all" onclick='filterCategory("Animals", null)'>View All</button>
-      </div>
-      <div class="products-grid" id="animalsGrid"></div>
-    </div>
-
-    <div class="section" id="fidgetsSection">
-      <div class="section-header">
-        <h2 class="section-title">Fidgets</h2>
-        <button class="view-all" onclick='filterCategory("Fidgets", null)'>View All</button>
-      </div>
-      <div class="products-grid" id="fidgetsGrid"></div>
-    </div>
-
-    <div class="section" id="figuresSection">
-      <div class="section-header">
-        <h2 class="section-title">Figures</h2>
-        <button class="view-all" onclick='filterCategory("Figures", null)'>View All</button>
-      </div>
-      <div class="products-grid" id="figuresGrid"></div>
-    </div>
-
-    <div class="section" id="vehiclesSection">
-      <div class="section-header">
-        <h2 class="section-title">Vehicles</h2>
-        <button class="view-all" onclick='filterCategory("Vehicles", null)'>View All</button>
-      </div>
-      <div class="products-grid" id="vehiclesGrid"></div>
-    </div>
-
-    <div class="section" id="airpodsSection">
-      <div class="section-header">
-        <h2 class="section-title">AirPods</h2>
-        <button class="view-all" onclick='filterCategory("AirPods", null)'>View All</button>
-      </div>
-      <div class="products-grid" id="airpodsGrid"></div>
-    </div>
-
-    <div class="section" id="accessoriesSection">
-      <div class="section-header">
-        <h2 class="section-title">Accessories</h2>
-        <button class="view-all" onclick='filterCategory("Accessories", null)'>View All</button>
-      </div>
-      <div class="products-grid" id="accessoriesGrid"></div>
-    </div>
-
-    <div class="section" id="keycapsSection">
-      <div class="section-header">
-        <h2 class="section-title">Keycaps</h2>
-        <button class="view-all" onclick='filterCategory("Keycaps", null)'>View All</button>
-      </div>
-      <div class="products-grid" id="keycapsGrid"></div>
-    </div>
-
-  </div>
-
   </div>
 
   <div id="favoritesPage" class="container">
@@ -339,8 +288,7 @@
     <p id="emptyFavorites" style="text-align:center;color:var(--text-light);padding:40px;display:none;">No favorites yet. Click the ♥ on products to save them!</p>
   </div>
 
-  <!-- Modals remain the same -->
-
+  <!-- Product Detail Modal -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -361,16 +309,17 @@
           <span class="qty-val" id="modalQty">1</span>
           <button class="qty-btn" onclick="changeModalQty(1)">+</button>
         </div>
-        <button class="add-cart-btn" onclick="addToCartFromDetail()">Add to Cart</button>
+        <button class="add-cart-btn" onclick="addToCart()">Add to Cart</button>
       </div>
     </div>
   </div>
 
+  <!-- Cart Modal -->
   <div class="modal-overlay" id="cartModal">
     <div class="modal-content">
       <div class="modal-header">
         <h2>Your Cart</h2>
-        <button class="close-btn" onclick="closeCart()">X</button>
+        <button class="close-btn" onclick="closeModal('cartModal')">X</button>
       </div>
       <div class="modal-body">
         <div id="cartItems"></div>
@@ -380,60 +329,43 @@
     </div>
   </div>
 
-    <div class="modal-overlay" id="authModal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Sign In</h2>
-          <button class="close-btn" onclick="closeModal('authModal')">X</button>
-        </div>
-        <div class="modal-body" style="text-align:center; padding: 24px;">
-          <p style="color:var(--text-light); margin-bottom: 20px; font-size: 0.95rem;">Sign in to add items to your cart, favorite products, and request custom prints.</p>
-          <button class="auth-option" onclick="signInWithGoogle()" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; margin: 12px 0; border: 2px solid var(--border); border-radius: 4px; background: white; cursor: pointer; font-weight: 500; transition: all 0.2s;">
-            <span style="font-size: 1.2rem;">G</span> Sign in with Google
-          </button>
-          <div style="margin: 20px 0; color: var(--text-light); font-size: 0.9rem; position: relative;">
-            <span style="background: white; padding: 0 10px; position: relative; z-index: 1;">or</span>
-            <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); z-index: 0;"></div>
-          </div>
-          <input class="email-input" id="authEmail" type="email" placeholder="Email" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem; margin-bottom: 12px; outline: none; transition: border-color 0.2s;">
-          <input class="email-input" id="authPassword" type="password" placeholder="Password" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem; margin-bottom: 16px; outline: none; transition: border-color 0.2s;">
-          <button class="submit-btn" onclick="signInWithEmail()" style="width: 100%; padding: 12px; border: none; border-radius: 4px; background: var(--orange); color: var(--black); font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: background 0.2s;">Sign In</button>
-          <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 16px;">No account? Just enter your email and password to create one.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-overlay" id="customPrintModal">
+  <!-- Auth Modal -->
+  <div class="modal-overlay" id="authModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Custom Print Request</h2>
+        <h2>Sign In</h2>
+        <button class="close-btn" onclick="closeModal('authModal')">X</button>
+      </div>
+      <div class="modal-body">
+        <button class="auth-option" onclick="signInWithGoogle()">
+          <img src="https://www.google.com/favicon.ico" alt="" style="width:20px;height:20px;"> Continue with Google
+        </button>
+        <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
+        <input class="email-input" id="authEmail" type="email" placeholder="Email">
+        <input class="email-input" id="authPassword" type="password" placeholder="Password">
+        <button class="submit-btn" onclick="signInWithEmail()">Sign In / Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Print Modal -->
+  <div class="modal-overlay" id="customPrintModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Request Custom Print</h2>
         <button class="close-btn" onclick="closeModal('customPrintModal')">X</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>What do you need printed?</label>
-          <textarea id="customDesc" placeholder="Describe your custom print request (e.g., 'Dragon with wings, 6 inches tall')"></textarea>
-        </div>
-        <button class="submit-btn" onclick="submitCustomPrint()">Submit Request</button>
-        <p style="font-size:0.8rem;color:var(--text-light);margin-top:8px;">Custom prints take 5-7 business days. Admin will review and email you.</p>
-      </div>
-    </div>
-  </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Description of what you need</label>
+          <label>Description (what do you need printed?)</label>
           <textarea id="customDesc" placeholder="Describe your custom print request..."></textarea>
         </div>
-        <div class="form-group">
-          <label>Reference Image URL (optional)</label>
-          <input id="customImage" type="text" placeholder="https://...">
-        </div>
         <button class="submit-btn" onclick="submitCustomPrint()">Submit Request</button>
-        <p style="font-size:0.8rem;color:var(--text-light);margin-top:8px;">Custom prints take 5-7 business days. Admin will review your request.</p>
       </div>
     </div>
   </div>
 
+  <!-- Admin Modal -->
   <div class="modal-overlay" id="adminModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -442,12 +374,24 @@
       </div>
       <div class="modal-body">
         <div id="adminLogin" class="admin-login">
-          <h3 style="margin-bottom:12px;color:var(--orange);">Admin Access</h3>
-          <input id="adminPass" type="password" placeholder="Enter admin password">
-          <button class="submit-btn" onclick="checkAdminPass()">Enter</button>
-          <p style="font-size:0.8rem;color:var(--text-light);margin-top:8px;">Contact admin for password.</p>
+          <input type="password" id="adminPass" placeholder="Enter admin password">
+          <button class="submit-btn" onclick="checkAdminPass()">Login</button>
         </div>
         <div id="adminContent" style="display:none;">
+          <div class="admin-section">
+            <h3>Manage Discounts</h3>
+            <div style="margin-bottom:12px;">
+              <label style="font-size:0.9rem;display:block;margin-bottom:6px;">Select Product:</label>
+              <select id="discountProduct" style="padding:8px;border:2px solid var(--border);border-radius:8px;width:100%;margin-bottom:8px;">
+                <option value="">-- Choose a product --</option>
+              </select>
+              <label style="font-size:0.9rem;display:block;margin-bottom:6px;">Discount Percentage:</label>
+              <input type="number" id="discountPercent" min="1" max="99" value="25" style="padding:8px;border:2px solid var(--border);border-radius:8px;width:100px;margin-right:8px;">
+              <button class="status-btn ready" onclick="applyDiscount()" style="padding:8px 16px;">Apply Discount</button>
+              <button class="status-btn picked" onclick="removeDiscount()" style="padding:8px 16px;">Remove Discount</button>
+            </div>
+            <div id="activeDiscounts" style="font-size:0.85rem;color:var(--text-light;"></div>
+          </div>
           <div class="admin-section">
             <h3>Recent Orders</h3>
             <div id="adminOrders"></div>
@@ -465,6 +409,7 @@
     </div>
   </div>
 
+  <!-- Orders Modal -->
   <div class="modal-overlay" id="ordersModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -600,6 +545,7 @@
     let selectedSize = 0;
     let modalQty = 1;
     let isAdmin = false;
+    let discounts = JSON.parse(localStorage.getItem("discounts") || "{}");
 
     auth.onAuthStateChanged(user => {
       currentUser = user;
@@ -633,12 +579,21 @@
     function renderProductCard(p, container) {
       const isFav = favorites.includes(p.id);
       const imgContent = p.image
-        ? `<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=font-size:3rem>${p.emoji||"🧊"}</span>';">`
-        : `<span style="font-size:3rem">${p.emoji||"🧊"}</span>`;
+        ? `<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=font-size:3rem>🧊</span>';">`
+        : `<span style="font-size:3rem">🧊</span>`;
+      
       let badges = "";
       if (p.badge === "fire") badges = '<span class="badge fire">🔥 Fan Favorite</span>';
       else if (p.badge === "worker") badges = '<span class="badge worker">♥️ Worker\'s Favorite</span>';
       else if (p.badge === "deal") badges = '<span class="badge deal">⚡ Deal</span>';
+      
+      const hasDiscount = discounts[p.id];
+      const discountedPrice = hasDiscount ? Math.round(p.price * (1 - discounts[p.id] / 100) * 100) / 100 : p.price;
+      
+      if (hasDiscount) {
+        badges += `<span class="badge discount">${discounts[p.id]}% OFF</span>`;
+      }
+      
       container.innerHTML += `
         <div class="product-card" onclick="showProductDetail(${p.id})">
           <button class="fav-btn ${isFav?"favorited":""}" onclick="event.stopPropagation();toggleFavorite(${p.id})"><span style="font-size:1.2rem;">${isFav?"♥":"♡"}</span></button>
@@ -646,18 +601,21 @@
           <div class="product-info">
             <div class="product-badges">${badges}</div>
             <div class="product-name">${p.name}</div>
-            <div class="product-price">$${p.price}${p.price % 1 !== 0 ? "":""}</div>
+            <div class="product-price">
+              ${hasDiscount ? `<span class="original-price">$${p.price}</span>` : ""}
+              $${discountedPrice}${discountedPrice % 1 !== 0 ? "":""}
+            </div>
             <button class="add-btn" onclick="event.stopPropagation();quickAdd(${p.id})">Add to Cart</button>
           </div>
         </div>`;
     }
 
     function renderAll() {
-      ["featuredGrid","animalsGrid","fidgetsGrid","figuresGrid","vehiclesGrid","airpodsGrid","accessoriesGrid","keycapsGrid"].forEach(id => {
+      ["featuredGrid","popularGrid","animalsGrid","fidgetsGrid","figuresGrid","vehiclesGrid","airpodsGrid","accessoriesGrid","keycapsGrid"].forEach(id => {
         document.getElementById(id).innerHTML = "";
       });
-      // Featured shows ALL products
       products.forEach(p => renderProductCard(p, document.getElementById("featuredGrid")));
+      products.filter(p => p.badge === "fire" || p.badge === "worker").forEach(p => renderProductCard(p, document.getElementById("popularGrid")));
       products.filter(p => p.category === "Animals").forEach(p => renderProductCard(p, document.getElementById("animalsGrid")));
       products.filter(p => p.category === "Fidgets").forEach(p => renderProductCard(p, document.getElementById("fidgetsGrid")));
       products.filter(p => p.category === "Figures").forEach(p => renderProductCard(p, document.getElementById("figuresGrid")));
@@ -666,17 +624,17 @@
       products.filter(p => p.category === "Accessories").forEach(p => renderProductCard(p, document.getElementById("accessoriesGrid")));
       products.filter(p => p.category === "Keycaps").forEach(p => renderProductCard(p, document.getElementById("keycapsGrid")));
       document.getElementById("featuredSection").style.display = "block";
+      document.getElementById("popularSection").style.display = "block";
     }
 
     function filterCategory(cat, btn) {
       document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
       if (btn) btn.classList.add("active");
-      // Hide all sections
-      ["featuredSection","animalsSection","fidgetsSection","figuresSection","vehiclesSection","airpodsSection","accessoriesSection","keycapsSection"].forEach(id => {
+      ["featuredSection","popularSection","animalsSection","fidgetsSection","figuresSection","vehiclesSection","airpodsSection","accessoriesSection","keycapsSection"].forEach(id => {
         document.getElementById(id).style.display = "none";
       });
       document.getElementById("favoritesPage").classList.remove("show");
-      // Show selected category
+      document.getElementById("mainContent").classList.add("hide");
       const sectionMap = {
         "Animals": "animalsSection",
         "Fidgets": "fidgetsSection",
@@ -688,6 +646,7 @@
       };
       if (sectionMap[cat]) {
         document.getElementById(sectionMap[cat]).style.display = "block";
+        document.getElementById("mainContent").classList.remove("hide");
       }
     }
 
@@ -709,7 +668,7 @@
       modalQty = 1;
       document.getElementById("modalQty").textContent = modalQty;
       const sizeContainer = document.getElementById("sizeSelector");
-      const sizes = ["XtraSmall","Small","KindaSmall","Medium","Large","XtraLarge"];
+      const sizes = ["XtraSmall","Small","KindaSmall","Medium","Large","Big Boi"];
       sizeContainer.innerHTML = sizes.map((s,i) =>
         `<button class="size-btn ${i===1?"active":""}" onclick="selectSize(${i},this)">${s}</button>`
       ).join("");
@@ -732,7 +691,6 @@
         document.getElementById("modalPrice").textContent = "$" + base;
         return;
       }
-      // Articulated pricing: Small=+$1, Medium=+$1, Large=+$3, Big Boi=+$5
       const size = ["XtraSmall","Small","KindaSmall","Medium","Large","Big Boi"][selectedSize];
       const artPrice = size === "Big Boi" ? 5 : size === "Large" ? 3 : 1;
       document.getElementById("modalPrice").textContent = "$" + (base + artPrice);
@@ -747,59 +705,44 @@
       if (!currentUser) { showAuth(); return; }
       const p = products.find(x => x.id === id);
       if (!p) return;
-      cart.push({ id: p.id, name: p.name, price: p.price, size: p.size||"Small", art: false, qty: 1, emoji: p.emoji, image: p.image });
-      updateCartBadge();
-      saveCart();
+      const discountedPrice = discounts[p.id] ? Math.round(p.price * (1 - discounts[p.id] / 100) * 100) / 100 : p.price;
+      cart.push({ id: p.id, name: p.name, price: discountedPrice, originalPrice: p.price, size: p.size||"Small", art: false, qty: 1, image: p.image });
+      updateCartBadge(); saveCart();
+      alert(`${p.name} added to cart!`);
     }
 
-    function addToCartFromDetail() {
-      if (!currentUser) { closeModal("productModal"); showAuth(); return; }
+    function addToCart() {
       if (!selectedProduct) return;
-      const art = document.getElementById("artCheckbox").checked;
-      let price = selectedProduct.price;
-      if (selectedProduct.art && art) {
-        const size = ["XtraSmall","Small","KindaSmall","Medium","Large","Big Boi"][selectedSize];
-        price += size === "Big Boi" ? 5 : size === "Large" ? 3 : 1;
-      }
-      for (let i = 0; i < modalQty; i++) {
-        cart.push({ id: selectedProduct.id, name: selectedProduct.name, price, size: selectedProduct.size||"Small", art, qty: 1, emoji: selectedProduct.emoji, image: selectedProduct.image });
-      }
-      updateCartBadge();
-      saveCart();
+      const art = selectedProduct.art && document.getElementById("artCheckbox").checked;
+      const price = discounts[selectedProduct.id] ? Math.round(selectedProduct.price * (1 - discounts[selectedProduct.id] / 100) * 100) / 100 : selectedProduct.price;
+      cart.push({ id: selectedProduct.id, name: selectedProduct.name, price: price, originalPrice: selectedProduct.price, size: ["XtraSmall","Small","KindaSmall","Medium","Large","Big Boi"][selectedSize], art: art, qty: modalQty, image: selectedProduct.image });
+      updateCartBadge(); saveCart();
       closeModal("productModal");
+      alert(`${selectedProduct.name} added to cart!`);
     }
 
-    function updateCartBadge() {
-      document.getElementById("cartBadge").textContent = cart.reduce((a, x) => a + x.qty,0);
-    }
-
-    function updateFavCount() {
-      document.getElementById("favCount").textContent = favorites.length;
-    }
-
+    function updateCartBadge() { document.getElementById("cartBadge").textContent = cart.reduce((a,x)=>a+x.qty,0); }
     function saveCart() { localStorage.setItem("cart", JSON.stringify(cart)); }
 
-    function toggleCart() { renderCart(); document.getElementById("cartModal").classList.toggle("open"); }
-    function closeCart() { document.getElementById("cartModal").classList.remove("open"); }
+    function toggleCart() {
+      renderCart();
+      document.getElementById("cartModal").classList.add("open");
+    }
 
     function renderCart() {
       const container = document.getElementById("cartItems");
-      if (cart.length === 0) {
-        container.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
-        document.getElementById("cartTotal").textContent = "Total: $0";
-        return;
-      }
-      container.innerHTML = cart.map((p, i) => `
+      if (cart.length === 0) { container.innerHTML = '<div class="empty-cart">Your cart is empty</div>'; return; }
+      container.innerHTML = cart.map((p,i) => `
         <div class="cart-item">
-          <div class="cart-item-emoji">${p.image ? `<img src="${p.image}" style="width:40px;height:40px;object-fit:contain;">` : (p.emoji || "🧊")}</div>
+          <div class="cart-item-emoji">${p.image ? `<img src="${p.image}" style="width:50px;height:50px;object-fit:contain;">` : '🧊'}</div>
           <div class="cart-item-info">
             <div class="cart-item-name">${p.name}</div>
-            <div class="cart-item-size">${p.art ? "Articulated " : ""}${p.size} - $${p.price}</div>
-          </div>
-          <div class="cart-item-qty">
-            <button class="qty-btn" onclick="changeCartQty(${i},-1)">-</button>
-            <span>${p.qty}</span>
-            <button class="qty-btn" onclick="changeCartQty(${i},1)">+</button>
+            <div class="cart-item-size">${p.size}${p.art?" Articulated":""} - $${p.price} each</div>
+            <div class="cart-item-qty">
+              <button class="qty-btn" onclick="changeCartQty(${i},-1)">-</button>
+              <span>${p.qty}</span>
+              <button class="qty-btn" onclick="changeCartQty(${i},1)">+</button>
+            </div>
           </div>
         </div>`).join("");
       document.getElementById("cartTotal").textContent = "Total: $" + cart.reduce((a, x) => a + x.price * x.qty,0);
@@ -910,7 +853,6 @@
     function showCustomPrint() {
       if (!currentUser) { showAuth(); return; }
       document.getElementById("customDesc").value = "";
-      document.getElementById("customImage").value = "";
       document.getElementById("customPrintModal").classList.add("open");
     }
 
@@ -941,7 +883,6 @@
       if (!currentUser) { showAuth(); return; }
       if (!ADMIN_EMAILS.includes(currentUser.email)) return alert("Admin access only.");
       document.getElementById("adminModal").classList.add("open");
-      // Only show password field for admin emails
       document.getElementById("adminLogin").style.display = isAdmin ? "none" : "block";
       document.getElementById("adminContent").style.display = isAdmin ? "block" : "none";
       if (isAdmin) loadAdminData();
@@ -957,15 +898,50 @@
     }
 
     function loadAdminData() {
+      const discountSelect = document.getElementById("discountProduct");
+      discountSelect.innerHTML = '<option value="">-- Choose a product --</option>';
+      products.forEach(p => {
+        discountSelect.innerHTML += `<option value="${p.id}">${p.name} ($${p.price})</option>`;
+      });
+      updateDiscountDisplay();
+      
       db.collection("customPrints").where("status","==","pending").get().then(snap => {
         const container = document.getElementById("adminCustomPrints");
         if (snap.empty) { container.innerHTML = "<p>No pending requests.</p>"; return; }
         container.innerHTML = "";
         snap.forEach(doc => {
           const p = doc.data();
-          container.innerHTML += `<div class="order-item"><strong>${p.user}</strong><br>${p.description}<br>${p.image?`<a href="${p.image}" target="_blank">View Image</a><br>`:""}<button class="status-btn ready" onclick="approveCustomPrint('${doc.id}')">Approve</button><button class="status-btn picked" onclick="denyCustomPrint('${doc.id}')">Deny</button></div>`;
+          container.innerHTML += `<div class="order-item"><strong>${p.user}</strong><br>${p.description}<br><button class="status-btn ready" onclick="approveCustomPrint('${doc.id}')">Approve</button><button class="status-btn picked" onclick="denyCustomPrint('${doc.id}')">Deny</button></div>`;
         });
       });
+    }
+
+    function applyDiscount() {
+      const productId = parseInt(document.getElementById("discountProduct").value);
+      const percent = parseInt(document.getElementById("discountPercent").value);
+      if (!productId || !percent) return alert("Select a product and enter a discount percentage.");
+      discounts[productId] = percent;
+      localStorage.setItem("discounts", JSON.stringify(discounts));
+      updateDiscountDisplay();
+      renderAll();
+      alert(`Applied ${percent}% discount to product #${productId}`);
+    }
+
+    function removeDiscount() {
+      const productId = parseInt(document.getElementById("discountProduct").value);
+      if (!productId) return alert("Select a product.");
+      delete discounts[productId];
+      localStorage.setItem("discounts", JSON.stringify(discounts));
+      updateDiscountDisplay();
+      renderAll();
+      alert(`Removed discount from product #${productId}`);
+    }
+
+    function updateDiscountDisplay() {
+      const container = document.getElementById("activeDiscounts");
+      const keys = Object.keys(discounts);
+      if (keys.length === 0) { container.innerHTML = "No active discounts."; return; }
+      container.innerHTML = "Active discounts: " + keys.map(id => `${products.find(p=>p.id==id)?.name||'Product #'+id} (${discounts[id]}% off)`).join(", ");
     }
 
     function approveCustomPrint(id) { db.collection("customPrints").doc(id).update({ status: "approved" }).then(() => loadAdminData()); }
@@ -1006,11 +982,9 @@
       if (!val) { renderAll(); return; }
       const q = val.toLowerCase();
       const matches = products.filter(p => p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-      // Hide all sections
-      ["featuredSection","animalsSection","fidgetsSection","figuresSection","vehiclesSection","airpodsSection","accessoriesSection","keycapsSection"].forEach(id => {
+      ["featuredSection","popularSection","animalsSection","fidgetsSection","figuresSection","vehiclesSection","airpodsSection","accessoriesSection","keycapsSection"].forEach(id => {
         document.getElementById(id).style.display = "none";
       });
-      // Show search results in animals section
       document.getElementById("animalsGrid").innerHTML = "";
       if (matches.length === 0) {
         document.getElementById("animalsGrid").innerHTML = '<div class="no-results">No products found. <a href="#" onclick="toggleRVGPT();showCustomPrint();return false;">Request a custom print?</a></div>';
