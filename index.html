@@ -13,7 +13,6 @@
       --blue-dark: #1e3a8a;
       --blue: #2563eb;
       --blue-light: #3b82f6;
-      --blue-bg: #eff6ff;
       --orange: #f97316;
       --green: #10b981;
       --text: #1e293b;
@@ -69,8 +68,7 @@
     .fav-btn { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.95); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .fav-btn:hover { transform: scale(1.1); background: white; }
     .fav-btn.favorited { color: #e41b23; }
-    .product-image { height: 220px; display: flex; align-items: center; justify-content: center; background: white; padding: 16px; border-bottom: 1px solid var(--border); }
-    .product-image img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+    .product-emoji { height: 220px; display: flex; align-items: center; justify-content: center; background: white; padding: 16px; border-bottom: 1px solid var(--border); font-size: 6rem; }
     .product-info { padding: 16px; }
     .product-badges { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
     .badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 4px; font-weight: 600; }
@@ -91,9 +89,10 @@
     .modal-header h2 { font-size: 1.2rem; }
     .close-btn { width: 32px; height: 32px; border: none; background: #f3f4f6; border-radius: 50%; cursor: pointer; font-size: 1rem; }
     .modal-body { padding: 20px; }
-    .modal-image { width: 100%; height: 300px; object-fit: contain; background: #fafafa; border-radius: 8px; margin-bottom: 16px; }
+    .modal-emoji { font-size: 8rem; text-align: center; margin-bottom: 16px; }
     .modal-price { font-size: 1.5rem; font-weight: 700; color: var(--orange); margin-bottom: 12px; }
     .modal-desc { color: var(--text-light); margin-bottom: 16px; line-height: 1.5; font-size: 0.9rem; }
+    .modal-overview { background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.85rem; color: var(--text-light); border-left: 3px solid var(--blue); }
     .size-selector { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
     .size-btn { padding: 8px 16px; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
     .size-btn.active { border-color: var(--blue); background: var(--blue); color: white; }
@@ -115,17 +114,6 @@
     .checkout-btn { width: 100%; padding: 14px; border: none; border-radius: 8px; background: var(--green); color: white; font-weight: 600; cursor: pointer; font-size: 1rem; }
     .empty-cart { text-align: center; padding: 40px; color: var(--text-light); }
 
-    #authModal .modal-content { max-width: 400px; }
-    .auth-option { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .auth-option:hover { border-color: var(--blue); }
-    .email-input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 0.9rem; margin-bottom: 12px; }
-    .submit-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: var(--orange); color: white; font-weight: 600; cursor: pointer; }
-
-    #favoritesPage { display: none; }
-    #favoritesPage.show { display: block; }
-    #mainContent.hide { display: none; }
-
-    #customPrintModal .modal-content { max-width: 500px; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 6px; }
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.9rem; }
@@ -138,21 +126,20 @@
     .status-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; margin: 2px; }
     .status-btn.ready { background: var(--green); color: white; }
     .status-btn.picked { background: var(--blue); color: white; }
-    .status-btn.pending { background: var(--orange); color: white; }
-    .admin-login { padding: 20px; }
-    .admin-login input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; margin-bottom: 12px; font-size: 0.9rem; }
 
-    .rvgpt-btn { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%; border: none; background: var(--blue); color: white; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.4); z-index: 50; display: flex; align-items: center; justify-content: center; }
-    .rvgpt-btn img { width: 36px; height: 36px; border-radius: 50%; }
+    .maintenance-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--blue-dark); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; }
+    .maintenance-screen.show { display: flex; }
+    .maintenance-screen h1 { font-size: 3rem; margin-bottom: 20px; }
+    .maintenance-screen p { font-size: 1.2rem; max-width: 600px; opacity: 0.9; }
+
+    .rvgpt-btn { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%; border: none; background: var(--blue); color: white; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.4); z-index: 50; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
     .rvgpt-sidebar { position: fixed; bottom: 90px; right: 24px; width: 350px; max-height: 500px; background: white; border-radius: var(--radius); box-shadow: 0 8px 30px rgba(0,0,0,0.15); z-index: 50; display: none; flex-direction: column; }
     .rvgpt-sidebar.open { display: flex; }
     .rvgpt-header { background: var(--blue-dark); color: white; padding: 14px 16px; border-radius: var(--radius) var(--radius) 0 0; display: flex; align-items: center; gap: 10px; }
-    .rvgpt-header img { width: 28px; height: 28px; border-radius: 50%; }
     .rvgpt-messages { flex: 1; overflow-y: auto; padding: 16px; max-height: 350px; }
     .rvgpt-msg { margin-bottom: 10px; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; line-height: 1.4; }
     .rvgpt-msg.bot { background: #f3f4f6; }
     .rvgpt-msg.user { background: var(--blue); color: white; margin-left: 20px; }
-    .rvgpt-msg.bot img { max-width: 100%; border-radius: 8px; margin-top: 8px; }
     .rvgpt-input { display: flex; padding: 12px; border-top: 1px solid var(--border); }
     .rvgpt-input input { flex: 1; padding: 10px; border: 2px solid var(--border); border-radius: 8px 0 0 8px; outline: none; }
     .rvgpt-input button { padding: 10px 16px; border: none; background: var(--blue); color: white; border-radius: 0 8px 8px 0; cursor: pointer; }
@@ -163,132 +150,147 @@
     .promo-section h2 { font-size: 2rem; margin-bottom: 10px; }
     .promo-section p { font-size: 1.1rem; opacity: 0.9; }
 
+    #favoritesPage { display: none; }
+    #favoritesPage.show { display: block; }
+    #mainContent.hide { display: none; }
+
     @media (max-width: 768px) {
       header { flex-wrap: wrap; }
       .search-box { order: 3; flex-basis: 100%; max-width: 100%; }
       .products-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
       .section-title { font-size: 1.1rem; }
       .rvgpt-sidebar { width: calc(100% - 48px); }
+      .modal-emoji { font-size: 5rem; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <button class="logo-btn" onclick="showSection('Featured')">
-      <img src="logo.png" alt="Forg3D Prints" onerror="this.style.display='none';">
-      <span>Forg3D Prints</span>
-    </button>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search products..." oninput="handleSearch(this.value)">
-    </div>
-    <div class="header-buttons">
-      <button class="fav-header-btn" onclick="showFavorites()" title="My Favorites">♥ <span class="fav-count" id="favCount">0</span></button>
-      <button class="cart-button" onclick="toggleCart()">🛒 <span class="cart-badge" id="cartBadge">0</span></button>
-      <div class="user-menu">
-        <button class="user-button" id="userBtn" onclick="toggleUserMenu()">L</button>
-        <div class="user-dropdown" id="userDropdown">
-          <button onclick="showAuth()">Sign In</button>
-          <button onclick="showFavorites()" class="divider">My Favorites</button>
-          <button onclick="showOrders()">My Orders</button>
-          <button onclick="showAdmin()" class="divider admin-btn">Admin Panel</button>
-          <button onclick="logout()" class="divider">Sign Out</button>
+  <!-- Maintenance Screen -->
+  <div class="maintenance-screen" id="maintenanceScreen">
+    <h1>🛠️ Under Maintenance</h1>
+    <p>We're currently updating the site. Please check back soon!</p>
+    <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">Admins can sign in to access the site.</p>
+  </div>
+
+  <div id="siteContent">
+    <header>
+      <button class="logo-btn" onclick="showSection('Featured')">
+        <img src="logo.png" alt="Forg3D Prints" onerror="this.style.display='none'">
+        <span>Forg3D Prints</span>
+      </button>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search products..." oninput="handleSearch(this.value)">
+      </div>
+      <div class="header-buttons">
+        <button class="fav-header-btn" onclick="showFavorites()" title="My Favorites">♥ <span class="fav-count" id="favCount">0</span></button>
+        <button class="cart-button" onclick="toggleCart()">🛒 <span class="cart-badge" id="cartBadge">0</span></button>
+        <div class="user-menu">
+          <button class="user-button" id="userBtn" onclick="toggleUserMenu()">L</button>
+          <div class="user-dropdown" id="userDropdown">
+            <button onclick="showAuth()">Sign In</button>
+            <button onclick="showFavorites()" class="divider">My Favorites</button>
+            <button onclick="showOrders()">My Orders</button>
+            <button onclick="showAdmin()" class="divider admin-btn">Admin Panel</button>
+            <button onclick="toggleMaintenance()" class="divider admin-btn">Toggle Maintenance</button>
+            <button onclick="logout()" class="divider">Sign Out</button>
+          </div>
         </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <nav class="navbar">
-    <div class="nav-links">
-      <button class="nav-btn active" onclick='filterCategory("Featured", this)'>Featured</button>
-      <button class="nav-btn" onclick='filterCategory("Animals", this)'>Animals</button>
-      <button class="nav-btn" onclick='filterCategory("Fidgets", this)'>Fidgets</button>
-      <button class="nav-btn" onclick='filterCategory("Figures", this)'>Figures</button>
-      <button class="nav-btn" onclick='filterCategory("Vehicles", this)'>Vehicles</button>
-      <button class="nav-btn" onclick='filterCategory("AirPods", this)'>AirPods</button>
-      <button class="nav-btn" onclick='filterCategory("Accessories", this)'>Accessories</button>
-      <button class="nav-btn" onclick='filterCategory("Keycaps", this)'>Keycaps</button>
-      <button class="nav-btn" onclick="showCustomPrint()">Custom Print</button>
-    </div>
-  </nav>
-
-  <div class="promo-section">
-    <h2>Forg3D Prints</h2>
-    <p>Custom 3D printed products made with precision. Cash on pickup. Browse our collection below.</p>
-  </div>
-
-  <div class="container" id="mainContent">
-    <div class="section" id="featuredSection">
-      <div class="section-header">
-        <h2 class="section-title">⭐ Featured Products</h2>
+    <nav class="navbar">
+      <div class="nav-links">
+        <button class="nav-btn active" onclick='filterCategory("Featured", this)'>Featured</button>
+        <button class="nav-btn" onclick='filterCategory("Animals", this)'>🐾 Animals</button>
+        <button class="nav-btn" onclick='filterCategory("Fidgets", this)'>🧩 Fidgets</button>
+        <button class="nav-btn" onclick='filterCategory("Figures", this)'>🎭 Figures</button>
+        <button class="nav-btn" onclick='filterCategory("Vehicles", this)'>🚗 Vehicles</button>
+        <button class="nav-btn" onclick='filterCategory("AirPods", this)'>🎧 AirPods</button>
+        <button class="nav-btn" onclick='filterCategory("Accessories", this)'>📦 Accessories</button>
+        <button class="nav-btn" onclick='filterCategory("Keycaps", this)'>⌨️ Keycaps</button>
+        <button class="nav-btn" onclick="showCustomPrint()">Custom Print</button>
       </div>
-      <div class="products-grid" id="featuredGrid"></div>
+    </nav>
+
+    <div class="promo-section">
+      <h2>🖨️ Forg3D Prints</h2>
+      <p>Custom 3D printed products made with precision. Cash on pickup. Browse our collection below.</p>
     </div>
 
-    <div class="section" id="animalsSection">
-      <div class="section-header">
-        <h2 class="section-title">🐾 Animals</h2>
-        <button class="view-all" onclick='filterCategory("Animals", null)'>View All</button>
+    <div class="container" id="mainContent">
+      <div class="section" id="featuredSection">
+        <div class="section-header">
+          <h2 class="section-title">⭐ Featured Products</h2>
+        </div>
+        <div class="products-grid" id="featuredGrid"></div>
       </div>
-      <div class="products-grid" id="animalsGrid"></div>
-    </div>
 
-    <div class="section" id="fidgetsSection">
-      <div class="section-header">
-        <h2 class="section-title">🧩 Fidgets</h2>
-        <button class="view-all" onclick='filterCategory("Fidgets", null)'>View All</button>
+      <div class="section" id="animalsSection">
+        <div class="section-header">
+          <h2 class="section-title">🐾 Animals</h2>
+          <button class="view-all" onclick='filterCategory("Animals", null)'>View All</button>
+        </div>
+        <div class="products-grid" id="animalsGrid"></div>
       </div>
-      <div class="products-grid" id="fidgetsGrid"></div>
-    </div>
 
-    <div class="section" id="figuresSection">
-      <div class="section-header">
-        <h2 class="section-title">🎭 Figures</h2>
-        <button class="view-all" onclick='filterCategory("Figures", null)'>View All</button>
+      <div class="section" id="fidgetsSection">
+        <div class="section-header">
+          <h2 class="section-title">🧩 Fidgets</h2>
+          <button class="view-all" onclick='filterCategory("Fidgets", null)'>View All</button>
+        </div>
+        <div class="products-grid" id="fidgetsGrid"></div>
       </div>
-      <div class="products-grid" id="figuresGrid"></div>
-    </div>
 
-    <div class="section" id="vehiclesSection">
-      <div class="section-header">
-        <h2 class="section-title">🚗 Vehicles</h2>
-        <button class="view-all" onclick='filterCategory("Vehicles", null)'>View All</button>
+      <div class="section" id="figuresSection">
+        <div class="section-header">
+          <h2 class="section-title">🎭 Figures</h2>
+          <button class="view-all" onclick='filterCategory("Figures", null)'>View All</button>
+        </div>
+        <div class="products-grid" id="figuresGrid"></div>
       </div>
-      <div class="products-grid" id="vehiclesGrid"></div>
-    </div>
 
-    <div class="section" id="airpodsSection">
-      <div class="section-header">
-        <h2 class="section-title">🎧 AirPods Cases</h2>
-        <button class="view-all" onclick='filterCategory("AirPods", null)'>View All</button>
+      <div class="section" id="vehiclesSection">
+        <div class="section-header">
+          <h2 class="section-title">🚗 Vehicles</h2>
+          <button class="view-all" onclick='filterCategory("Vehicles", null)'>View All</button>
+        </div>
+        <div class="products-grid" id="vehiclesGrid"></div>
       </div>
-      <div class="products-grid" id="airpodsGrid"></div>
-    </div>
 
-    <div class="section" id="accessoriesSection">
-      <div class="section-header">
-        <h2 class="section-title">📦 Accessories</h2>
-        <button class="view-all" onclick='filterCategory("Accessories", null)'>View All</button>
+      <div class="section" id="airpodsSection">
+        <div class="section-header">
+          <h2 class="section-title">🎧 AirPods Cases</h2>
+          <button class="view-all" onclick='filterCategory("AirPods", null)'>View All</button>
+        </div>
+        <div class="products-grid" id="airpodsGrid"></div>
       </div>
-      <div class="products-grid" id="accessoriesGrid"></div>
-    </div>
 
-    <div class="section" id="keycapsSection">
-      <div class="section-header">
-        <h2 class="section-title">⌨️ Keycaps</h2>
-        <button class="view-all" onclick='filterCategory("Keycaps", null)'>View All</button>
+      <div class="section" id="accessoriesSection">
+        <div class="section-header">
+          <h2 class="section-title">📦 Accessories</h2>
+          <button class="view-all" onclick='filterCategory("Accessories", null)'>View All</button>
+        </div>
+        <div class="products-grid" id="accessoriesGrid"></div>
       </div>
-      <div class="products-grid" id="keycapsGrid"></div>
-    </div>
-  </div>
 
-  <div id="favoritesPage" class="container">
-    <div class="section-header" style="margin-bottom:20px;">
-      <h2 class="section-title">♥ My Favorites</h2>
-      <button class="view-all" onclick="showSection('Featured')">Back to Shop</button>
+      <div class="section" id="keycapsSection">
+        <div class="section-header">
+          <h2 class="section-title">⌨️ Keycaps</h2>
+          <button class="view-all" onclick='filterCategory("Keycaps", null)'>View All</button>
+        </div>
+        <div class="products-grid" id="keycapsGrid"></div>
+      </div>
     </div>
-    <div class="products-grid" id="favoritesGrid"></div>
-    <p id="emptyFavorites" style="text-align:center;color:var(--text-light);padding:40px;display:none;">No favorites yet. Click the ♥ on products to save them!</p>
+
+    <div id="favoritesPage" class="container">
+      <div class="section-header" style="margin-bottom:20px;">
+        <h2 class="section-title">♥ My Favorites</h2>
+        <button class="view-all" onclick="showSection('Featured')">Back to Shop</button>
+      </div>
+      <div class="products-grid" id="favoritesGrid"></div>
+      <p id="emptyFavorites" style="text-align:center;color:var(--text-light);padding:40px;display:none;">No favorites yet. Click the ♥ on products to save them!</p>
+    </div>
   </div>
 
   <!-- Product Detail Modal -->
@@ -299,9 +301,12 @@
         <button class="close-btn" onclick="closeModal('productModal')">X</button>
       </div>
       <div class="modal-body">
-        <img class="modal-image" id="modalImage" src="" alt="">
+        <div class="modal-emoji" id="modalEmoji">🧊</div>
         <div class="modal-price" id="modalPrice">$0</div>
         <div class="modal-desc" id="modalDesc"></div>
+        <div class="modal-overview" id="modalOverview">
+          <strong>🤖 AI Overview:</strong> Loading...
+        </div>
         <div class="size-selector" id="sizeSelector"></div>
         <div class="articulated-toggle" id="articulatedToggle" style="display:none;">
           <input type="checkbox" id="artCheckbox" onchange="updateModalPrice()">
@@ -377,40 +382,30 @@
         <button class="close-btn" onclick="closeModal('adminModal')">X</button>
       </div>
       <div class="modal-body">
-        <div id="adminLogin" class="admin-login">
-          <input type="password" id="adminPass" placeholder="Enter admin password">
-          <button class="submit-btn" onclick="checkAdminPass()">Login</button>
+        <div class="admin-section">
+          <h3>Grant Admin Access</h3>
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <input type="email" id="newAdminEmail" placeholder="Email to grant admin access" style="flex:1;padding:8px;border:2px solid var(--border);border-radius:8px;">
+            <button class="status-btn picked" onclick="grantAdmin()">Grant</button>
+          </div>
+          <div id="adminList" style="font-size:0.85rem;color:var(--text-light);"></div>
         </div>
-        <div id="adminContent" style="display:none;">
-          <div class="admin-section">
-            <h3>Grant Admin Access</h3>
-            <div style="display:flex;gap:8px;margin-bottom:12px;">
-              <input type="email" id="newAdminEmail" placeholder="Email to grant admin access" style="flex:1;padding:8px;border:2px solid var(--border);border-radius:8px;">
-              <button class="status-btn picked" onclick="grantAdmin()">Grant</button>
-            </div>
-            <div id="adminList" style="font-size:0.85rem;color:var(--text-light);"></div>
+        <div class="admin-section">
+          <h3>Promo Codes</h3>
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+            <input type="text" id="promoName" placeholder="Code (e.g. SAVE20)" style="padding:8px;border:2px solid var(--border);border-radius:8px;">
+            <input type="number" id="promoPercent" placeholder="%" min="1" max="99" style="width:80px;padding:8px;border:2px solid var(--border);border-radius:8px;">
+            <button class="status-btn ready" onclick="addPromo()">Add</button>
           </div>
-          <div class="admin-section">
-            <h3>Promo Codes</h3>
-            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-              <input type="text" id="promoName" placeholder="Code (e.g. SAVE20)" style="padding:8px;border:2px solid var(--border);border-radius:8px;">
-              <input type="number" id="promoPercent" placeholder="%" min="1" max="99" style="width:80px;padding:8px;border:2px solid var(--border);border-radius:8px;">
-              <button class="status-btn ready" onclick="addPromo()">Add</button>
-            </div>
-            <div id="promoList" style="font-size:0.85rem;color:var(--text-light);"></div>
-          </div>
-          <div class="admin-section">
-            <h3>Recent Orders</h3>
-            <div id="adminOrders"></div>
-          </div>
-          <div class="admin-section">
-            <h3>Custom Print Requests</h3>
-            <div id="adminCustomPrints"></div>
-          </div>
-          <div class="admin-section">
-            <h3>Order Tracker</h3>
-            <div id="orderTracker"></div>
-          </div>
+          <div id="promoList" style="font-size:0.85rem;color:var(--text-light);"></div>
+        </div>
+        <div class="admin-section">
+          <h3>Recent Orders</h3>
+          <div id="adminOrders"></div>
+        </div>
+        <div class="admin-section">
+          <h3>Custom Print Requests</h3>
+          <div id="adminCustomPrints"></div>
         </div>
       </div>
     </div>
@@ -435,13 +430,11 @@
     <textarea name="description"></textarea>
   </form>
 
-  <button class="rvgpt-btn" onclick="toggleRVGPT()">
-    <img src="RV.png" alt="RVGPT" onerror="this.style.display='none';this.parentNode.innerHTML='🤖';">
-  </button>
+  <button class="rvgpt-btn" onclick="toggleRVGPT()">🤖</button>
 
   <div class="rvgpt-sidebar" id="rvgptSidebar">
     <div class="rvgpt-header">
-      <img src="RV.png" alt="RV" onerror="this.style.display='none';">
+      <span>🤖</span>
       <span>RVGPT</span>
     </div>
     <div class="rvgpt-messages" id="rvgptMessages">
@@ -466,7 +459,6 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    const ADMIN_PASS = "123456789";
     const ADMIN_EMAILS = [
       "ruveer123@gmail.com",
       "harvmiller13@gmail.com",
@@ -479,82 +471,82 @@
 
     const products = [
       // Animals
-      { id: 1, name: "Seal (Unarticulated)", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small", image: "seal.png" },
-      { id: 2, name: "Seal (Articulated)", desc: "2 in long 1 in tall articulated", price: 3, category: "Animals", badge: "worker", art: true, size: "Small", image: "seal.png" },
-      { id: 3, name: "Dragon with Wings", desc: "2 in long 1 in tall 2 in wide with wings", price: 2, category: "Animals", size: "Small", image: "dragon.png" },
-      { id: 4, name: "Dragon with Wings (Articulated)", desc: "2 in long 1 in tall 2 in wide with wings articulated", price: 3, category: "Animals", art: true, size: "Small", image: "dragon.png" },
-      { id: 5, name: "Turtle (Unarticulated)", desc: "2 in long 2 in wide", price: 2, category: "Animals", size: "Small" },
-      { id: 6, name: "Turtle (Articulated)", desc: "2 in long 2 in wide articulated", price: 3, category: "Animals", art: true, size: "Small" },
-      { id: 7, name: "Cat", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small" },
-      { id: 8, name: "Dog", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small" },
-      { id: 9, name: "Frog", desc: "2 in tall 2 in wide", price: 2, category: "Animals", size: "Small" },
-      { id: 10, name: "Duck", desc: "1 in tall", price: 2, category: "Animals", size: "Small" },
-      { id: 11, name: "Octopus (Unarticulated)", desc: "2x2x2 inches", price: 2, category: "Animals", size: "Small" },
-      { id: 12, name: "Octopus (Articulated)", desc: "2x2x2 inches articulated", price: 3, category: "Animals", art: true, size: "Small" },
-      { id: 13, name: "Axolotl (Unarticulated)", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small" },
-      { id: 14, name: "Axolotl (Articulated)", desc: "2 in long 1 in tall articulated", price: 3, category: "Animals", art: true, size: "Small" },
-      { id: 15, name: "Shark (Unarticulated)", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small" },
-      { id: 16, name: "Shark (Articulated)", desc: "2 in long 1 in tall articulated", price: 3, category: "Animals", art: true, size: "Small" },
-      { id: 17, name: "Snake (Unarticulated)", desc: "3 in long 0.5 in wide", price: 2, category: "Animals", size: "Small" },
-      { id: 18, name: "Snake (Articulated)", desc: "3 in long 0.5 in wide articulated", price: 3, category: "Animals", art: true, size: "Small" },
-      { id: 19, name: "Medium Animal", desc: "4 in long 2 in tall (4 in wide with wings)", price: 4, category: "Animals", size: "Medium" },
-      { id: 20, name: "Medium Animal (Articulated)", desc: "4 in long 2 in tall (4 in wide with wings) articulated", price: 5, category: "Animals", art: true, size: "Medium" },
-      { id: 21, name: "Large Animal", desc: "5 in tall 5 in wide", price: 10, category: "Animals", size: "Large" },
-      { id: 22, name: "Large Animal (Articulated)", desc: "5 in tall 5 in wide articulated", price: 13, category: "Animals", art: true, size: "Large" },
-      { id: 23, name: "Big Boi Animal", desc: "9 in tall 9 in wide", price: 30, category: "Animals", badge: "worker", size: "Big Boi" },
-      { id: 24, name: "Big Boi Animal (Articulated)", desc: "9 in tall 9 in wide articulated", price: 35, category: "Animals", badge: "worker", art: true, size: "Big Boi" },
-      { id: 25, name: "Baby Potato", desc: "2 in tall 1.5 in wide with face, arms, legs", price: 5, category: "Animals", size: "Small" },
-      { id: 26, name: "The Rockatoo on Branch", desc: "2 in tall", price: 4, category: "Animals", size: "Small" },
-      { id: 27, name: "The Rocktopus (Articulated)", desc: "3x3x3 inches", price: 7, category: "Animals", art: true, size: "KindaSmall" },
-      { id: 28, name: "Mix N Match Small Animals (3 items)", desc: "2 in long 1 in tall each", price: 5, category: "Animals", size: "Small" },
-      { id: 29, name: "Mix N Match (2+1 Articulated)", desc: "2 in long 1 in tall each", price: 6, category: "Animals", size: "Small" },
-      { id: 30, name: "Mix N Match (1+2 Articulated)", desc: "2 in long 1 in tall each", price: 7, category: "Animals", size: "Small" },
+      { id: 1, name: "Seal", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small", emoji: "🦭" },
+      { id: 2, name: "Seal Articulated", desc: "2 in long 1 in tall articulated", price: 3, category: "Animals", badge: "worker", art: true, size: "Small", emoji: "🦭" },
+      { id: 3, name: "Dragon", desc: "2 in long 1 in tall 2 in wide with wings", price: 2, category: "Animals", size: "Small", emoji: "🐉" },
+      { id: 4, name: "Dragon Articulated", desc: "2 in long 1 in tall 2 in wide with wings articulated", price: 3, category: "Animals", art: true, size: "Small", emoji: "🐉" },
+      { id: 5, name: "Turtle", desc: "2 in long 2 in wide", price: 2, category: "Animals", size: "Small", emoji: "🐢" },
+      { id: 6, name: "Turtle Articulated", desc: "2 in long 2 in wide articulated", price: 3, category: "Animals", art: true, size: "Small", emoji: "🐢" },
+      { id: 7, name: "Cat", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small", emoji: "🐱" },
+      { id: 8, name: "Dog", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small", emoji: "🐕" },
+      { id: 9, name: "Frog", desc: "2 in tall 2 in wide", price: 2, category: "Animals", size: "Small", emoji: "🐸" },
+      { id: 10, name: "Duck", desc: "1 in tall", price: 2, category: "Animals", size: "Small", emoji: "🦆" },
+      { id: 11, name: "Octopus", desc: "2x2x2 inches", price: 2, category: "Animals", size: "Small", emoji: "🐙" },
+      { id: 12, name: "Octopus Articulated", desc: "2x2x2 inches articulated", price: 3, category: "Animals", art: true, size: "Small", emoji: "🐙" },
+      { id: 13, name: "Axolotl", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small", emoji: "🦎" },
+      { id: 14, name: "Axolotl Articulated", desc: "2 in long 1 in tall articulated", price: 3, category: "Animals", art: true, size: "Small", emoji: "🦎" },
+      { id: 15, name: "Shark", desc: "2 in long 1 in tall", price: 2, category: "Animals", size: "Small", emoji: "🦈" },
+      { id: 16, name: "Shark Articulated", desc: "2 in long 1 in tall articulated", price: 3, category: "Animals", art: true, size: "Small", emoji: "🦈" },
+      { id: 17, name: "Snake", desc: "3 in long 0.5 in wide", price: 2, category: "Animals", size: "Small", emoji: "🐍" },
+      { id: 18, name: "Snake Articulated", desc: "3 in long 0.5 in wide articulated", price: 3, category: "Animals", art: true, size: "Small", emoji: "🐍" },
+      { id: 19, name: "Medium Animal", desc: "4 in long 2 in tall (4 in wide with wings)", price: 4, category: "Animals", size: "Medium", emoji: "🐾" },
+      { id: 20, name: "Medium Animal Articulated", desc: "4 in long 2 in tall (4 in wide with wings) articulated", price: 5, category: "Animals", art: true, size: "Medium", emoji: "🐾" },
+      { id: 21, name: "Large Animal", desc: "5 in tall 5 in wide", price: 10, category: "Animals", size: "Large", emoji: "🐾" },
+      { id: 22, name: "Large Animal Articulated", desc: "5 in tall 5 in wide articulated", price: 13, category: "Animals", art: true, size: "Large", emoji: "🐾" },
+      { id: 23, name: "Big Boi Animal", desc: "9 in tall 9 in wide", price: 30, category: "Animals", badge: "worker", size: "Big Boi", emoji: "🦣" },
+      { id: 24, name: "Big Boi Animal Articulated", desc: "9 in tall 9 in wide articulated", price: 35, category: "Animals", badge: "worker", art: true, size: "Big Boi", emoji: "🦣" },
+      { id: 25, name: "Baby Potato", desc: "2 in tall 1.5 in wide with face, arms, legs", price: 5, category: "Animals", size: "Small", emoji: "🥔" },
+      { id: 26, name: "The Rockatoo on Branch", desc: "2 in tall", price: 4, category: "Animals", size: "Small", emoji: "🦜" },
+      { id: 27, name: "The Rocktopus Articulated", desc: "3x3x3 inches", price: 7, category: "Animals", art: true, size: "Medium", emoji: "🐙" },
+      { id: 28, name: "Mix N Match Small Animals (3 items)", desc: "2 in long 1 in tall each", price: 5, category: "Animals", size: "Small", emoji: "🐾" },
+      { id: 29, name: "Mix N Match (2+1 Articulated)", desc: "2 in long 1 in tall each", price: 6, category: "Animals", size: "Small", emoji: "🐾" },
+      { id: 30, name: "Mix N Match (1+2 Articulated)", desc: "2 in long 1 in tall each", price: 7, category: "Animals", size: "Small", emoji: "🐾" },
       // Fidgets
-      { id: 31, name: "Button Fidget", desc: "1 in tall 1 in wide", price: 2, category: "Fidgets", badge: "fire", size: "XtraSmall", image: "button fidget.png" },
-      { id: 32, name: "Switch Fidget", desc: "1 in wide", price: 2, category: "Fidgets", size: "XtraSmall", image: "switch fidget.png" },
-      { id: 33, name: "Fidget Spinner", desc: "Classic fidget spinner", price: 2, category: "Fidgets", image: "fidget.png" },
-      { id: 34, name: "Useless Scrap Plastic", desc: "1x1x1 scrap plastic", price: 0.25, category: "Fidgets", size: "XtraSmall" },
-      { id: 35, name: "Mini Poop", desc: "0.25 in tall", price: 0.50, category: "Fidgets", size: "XtraXtraSmall" },
+      { id: 31, name: "Button Fidget", desc: "1 in tall 1 in wide", price: 2, category: "Fidgets", badge: "fire", size: "Small", emoji: "🧩" },
+      { id: 32, name: "Switch Fidget", desc: "1 in wide", price: 2, category: "Fidgets", size: "Small", emoji: "🧩" },
+      { id: 33, name: "Fidget Spinner", desc: "Classic fidget spinner", price: 2, category: "Fidgets", emoji: "🌀" },
+      { id: 34, name: "Useless Scrap Plastic", desc: "1x1x1 scrap plastic", price: 0.25, category: "Fidgets", size: "Small", emoji: "🗑️" },
+      { id: 35, name: "Mini Poop", desc: "0.25 in tall", price: 0.50, category: "Fidgets", size: "Small", emoji: "💩" },
       // Figures
-      { id: 36, name: "Mini Among Us Figure", desc: "2 in tall Among Us crewmate", price: 3, category: "Figures", badge: "worker", image: "among us.png" },
-      { id: 37, name: "Man Figure", desc: "3 in tall man figure", price: 3, category: "Figures", size: "Small" },
-      { id: 38, name: "Man Figure (Joints)", desc: "3 in tall articulated man figure", price: 5, category: "Figures", art: true, size: "Small" },
-      { id: 39, name: "Rick Astley Figure", desc: "3 in tall - Never gonna give you up!", price: 4, category: "Figures", art: true, size: "Small" },
-      { id: 40, name: "Cube", desc: "1x1x1 inch cube", price: 2, category: "Figures", size: "Small" },
-      { id: 41, name: "Mini Sword", desc: "3 in long 1 in wide sword", price: 3, category: "Figures", size: "Medium" },
+      { id: 36, name: "Mini Among Us Figure", desc: "2 in tall Among Us crewmate", price: 3, category: "Figures", badge: "worker", emoji: "👾" },
+      { id: 37, name: "Man Figure", desc: "3 in tall man figure", price: 3, category: "Figures", size: "Small", emoji: "🧍" },
+      { id: 38, name: "Man Figure Joints", desc: "3 in tall articulated man figure", price: 5, category: "Figures", art: true, size: "Small", emoji: "🧍" },
+      { id: 39, name: "Rick Astley Figure", desc: "3 in tall - Never gonna give you up!", price: 4, category: "Figures", art: true, size: "Small", emoji: "🧑" },
+      { id: 40, name: "Cube", desc: "1x1x1 inch cube", price: 2, category: "Figures", size: "Small", emoji: "🧊" },
+      { id: 41, name: "Mini Sword", desc: "3 in long 1 in wide sword", price: 3, category: "Figures", size: "Medium", emoji: "⚔️" },
       // Vehicles
-      { id: 42, name: "Mini Soccer Ball", desc: "1 in tall soccer ball", price: 2, category: "Vehicles", badge: "worker", size: "XtraSmall", image: "soccer.png" },
-      { id: 43, name: "Mini Football", desc: "1.5 in tall 3 in wide football", price: 3, category: "Vehicles", badge: "fire", size: "KindaSmall", image: "football.png" },
-      { id: 44, name: "Mini Baseball", desc: "1 in tall", price: 2, category: "Vehicles", size: "XtraSmall" },
-      { id: 45, name: "Mini Hockey Puck", desc: "2 in long 2 in wide puck", price: 2, category: "Vehicles", size: "XtraSmall" },
-      { id: 46, name: "Mini Volleyball", desc: "1 in tall volleyball", price: 2, category: "Vehicles", size: "XtraSmall" },
-      { id: 47, name: "Mini Boat", desc: "2 in long mini boat", price: 2, category: "Vehicles", size: "Small" },
-      { id: 48, name: "Mini Airplane", desc: "2 in long airplane", price: 2, category: "Vehicles", size: "Small" },
-      { id: 49, name: "Mini F1 Racecar", desc: "2 in long F1 car", price: 2, category: "Vehicles", size: "Small" },
-      { id: 50, name: "Mini Helicopter", desc: "2 in long 1 in tall helicopter", price: 2, category: "Vehicles", size: "Small" },
-      { id: 51, name: "Mini Motorcycle", desc: "2 in long 1 in tall motorcycle", price: 2, category: "Vehicles", size: "Small" },
+      { id: 42, name: "Mini Soccer Ball", desc: "1 in tall soccer ball", price: 2, category: "Vehicles", badge: "worker", size: "Small", emoji: "⚽️" },
+      { id: 43, name: "Mini Football", desc: "1.5 in tall 3 in wide football", price: 3, category: "Vehicles", badge: "fire", size: "Small", emoji: "🏈" },
+      { id: 44, name: "Mini Baseball", desc: "1 in tall", price: 2, category: "Vehicles", size: "Small", emoji: "⚾️" },
+      { id: 45, name: "Mini Hockey Puck", desc: "2 in long 2 in wide puck", price: 2, category: "Vehicles", size: "Small", emoji: "🏒" },
+      { id: 46, name: "Mini Volleyball", desc: "1 in tall volleyball", price: 2, category: "Vehicles", size: "Small", emoji: "🏐" },
+      { id: 47, name: "Mini Boat", desc: "2 in long mini boat", price: 2, category: "Vehicles", size: "Small", emoji: "🚣" },
+      { id: 48, name: "Mini Airplane", desc: "2 in long airplane", price: 2, category: "Vehicles", size: "Small", emoji: "✈️" },
+      { id: 49, name: "Mini F1 Racecar", desc: "2 in long F1 car", price: 2, category: "Vehicles", size: "Small", emoji: "🏎️" },
+      { id: 50, name: "Mini Helicopter", desc: "2 in long 1 in tall helicopter", price: 2, category: "Vehicles", size: "Small", emoji: "🚁" },
+      { id: 51, name: "Mini Motorcycle", desc: "2 in long 1 in tall motorcycle", price: 2, category: "Vehicles", size: "Small", emoji: "🏍️" },
       // AirPods
-      { id: 52, name: "AirPods Case", desc: "Fits AirPods Pro", price: 2, category: "AirPods", size: "Small", image: "airpods.png" },
-      { id: 53, name: "AirPods Case 2", desc: "Fits AirPods Pro", price: 2, category: "AirPods", size: "Small", image: "airpods 2.png" },
-      { id: 54, name: "Minecraft Chest AirPods Case", desc: "Fits AirPods Pro", price: 2, category: "AirPods", size: "Small" },
-      { id: 55, name: "Fortnite Ammo Box AirPods Case", desc: "Fits AirPods Pro", price: 2, category: "AirPods", size: "Small" },
-      { id: 56, name: "AirPods Pro 2 Honeycomb Case", desc: "Fits AirPods Pro 2", price: 2, category: "AirPods", size: "Small" },
+      { id: 52, name: "AirPods Case", desc: "Fits AirPods Pro", price: 2, category: "AirPods", size: "Small", emoji: "🎧" },
+      { id: 53, name: "AirPods Case 2", desc: "Fits AirPods Pro", price: 2, category: "AirPods", size: "Small", emoji: "🎧" },
+      { id: 54, name: "Minecraft Chest AirPods Case", desc: "Fits AirPods Pro", price: 2, category: "AirPods", size: "Small", emoji: "🎧" },
+      { id: 55, name: "Fortnite Ammo Box AirPods Case", desc: "Fits AirPods Pro", price: 2, category: "AirPods", size: "Small", emoji: "🎧" },
+      { id: 56, name: "AirPods Pro 2 Honeycomb Case", desc: "Fits AirPods Pro 2", price: 2, category: "AirPods", size: "Small", emoji: "🎧" },
       // Accessories
-      { id: 57, name: "Phone Stand", desc: "Fits all phones", price: 3, category: "Accessories", size: "KindaSmall" },
-      { id: 58, name: "Controller Stand", desc: "Fits Playstation controllers", price: 5, category: "Accessories", size: "Medium" },
-      { id: 59, name: "Headphone Stand", desc: "Fits all headphones", price: 5, category: "Accessories", size: "Medium" },
-      { id: 60, name: "Pen/Pencil Holder", desc: "4 in tall fits all pens", price: 4, category: "Accessories", size: "KindaSmall" },
-      { id: 61, name: "Mini Dodgers Hat", desc: "2 in tall hat", price: 2, category: "Accessories", size: "Small" },
-      { id: 62, name: "Chap Stick Holder", desc: "1x1x1 - You WILL remember your chapstick!", price: 1, category: "Accessories", size: "XtraSmall" },
-      { id: 63, name: "Rectangle Container Small", desc: "3W x 5H x 3L inches with lid", price: 5, category: "Accessories", size: "KindaSmall" },
-      { id: 64, name: "Rectangle Container Med", desc: "4W x 6H x 4L inches with lid", price: 9, category: "Accessories", size: "Medium" },
-      { id: 65, name: "Rectangle Container Large", desc: "5W x 7H x 5L inches with lid", price: 13, category: "Accessories", size: "Large" },
+      { id: 57, name: "Phone Stand", desc: "Fits all phones", price: 3, category: "Accessories", size: "Medium", emoji: "📱" },
+      { id: 58, name: "Controller Stand", desc: "Fits Playstation controllers", price: 5, category: "Accessories", size: "Medium", emoji: "🎮" },
+      { id: 59, name: "Headphone Stand", desc: "Fits all headphones", price: 5, category: "Accessories", size: "Medium", emoji: "🎧" },
+      { id: 60, name: "Pen/Pencil Holder", desc: "4 in tall fits all pens", price: 4, category: "Accessories", size: "Medium", emoji: "✏️" },
+      { id: 61, name: "Mini Dodgers Hat", desc: "2 in tall hat", price: 2, category: "Accessories", size: "Small", emoji: "🧢" },
+      { id: 62, name: "Chap Stick Holder", desc: "1x1x1 - You WILL remember your chapstick!", price: 1, category: "Accessories", size: "Small", emoji: "💄" },
+      { id: 63, name: "Rectangle Container Small", desc: "3W x 5H x 3L inches with lid", price: 5, category: "Accessories", size: "Medium", emoji: "📦" },
+      { id: 64, name: "Rectangle Container Med", desc: "4W x 6H x 4L inches with lid", price: 9, category: "Accessories", size: "Medium", emoji: "📦" },
+      { id: 65, name: "Rectangle Container Large", desc: "5W x 7H x 5L inches with lid", price: 13, category: "Accessories", size: "Large", emoji: "📦" },
       // Keycaps
-      { id: 66, name: "Custom Nametag", desc: "$2 + $1 per letter", price: 2, category: "Keycaps" },
-      { id: 67, name: "Custom Animal Keycap", desc: "0.5x0.5x0.5 inches", price: 2, category: "Keycaps", size: "XtraSmall" },
-      { id: 68, name: "Custom Letter Keycap", desc: "0.5x0.5x0.5 inches", price: 2, category: "Keycaps", size: "XtraSmall" },
+      { id: 66, name: "Custom Nametag", desc: "$2 + $1 per letter", price: 2, category: "Keycaps", emoji: "⌨️" },
+      { id: 67, name: "Custom Animal Keycap", desc: "0.5x0.5x0.5 inches", price: 2, category: "Keycaps", size: "Small", emoji: "⌨️" },
+      { id: 68, name: "Custom Letter Keycap", desc: "0.5x0.5x0.5 inches", price: 2, category: "Keycaps", size: "Small", emoji: "⌨️" },
       // Deals
-      { id: 69, name: "Big Boi Deal (1 Big + 1 Small 50% Off)", desc: "Articulated combo deal", price: 38, category: "Animals", badge: "deal", art: true }
+      { id: 69, name: "Big Boi Deal (1 Big + 1 Small 50% Off)", desc: "Articulated combo deal", price: 38, category: "Animals", badge: "deal", art: true, emoji: "🦣" }
     ];
 
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -563,10 +555,34 @@
     let selectedProduct = null;
     let selectedSize = 1;
     let modalQty = 1;
-    let isAdmin = false;
     let discounts = JSON.parse(localStorage.getItem("discounts") || "{}");
     let promoCodes = JSON.parse(localStorage.getItem("promoCodes") || "{}");
     let adminList = JSON.parse(localStorage.getItem("adminList") || "[]");
+    let maintenanceMode = JSON.parse(localStorage.getItem("maintenanceMode") || "false");
+
+    function isAdminEmail(email) {
+      return [...ADMIN_EMAILS, ...adminList].includes(email);
+    }
+
+    function checkMaintenance() {
+      if (maintenanceMode && currentUser && isAdminEmail(currentUser.email)) {
+        document.getElementById("maintenanceScreen").classList.add("show");
+        document.getElementById("siteContent").style.display = "none";
+      } else if (maintenanceMode && !currentUser) {
+        document.getElementById("maintenanceScreen").classList.add("show");
+        document.getElementById("siteContent").style.display = "none";
+      } else {
+        document.getElementById("maintenanceScreen").classList.remove("show");
+        document.getElementById("siteContent").style.display = "";
+      }
+    }
+
+    function toggleMaintenance() {
+      maintenanceMode = !maintenanceMode;
+      localStorage.setItem("maintenanceMode", JSON.stringify(maintenanceMode));
+      checkMaintenance();
+      alert(maintenanceMode ? "Maintenance mode ON - non-admins see maintenance screen" : "Maintenance mode OFF");
+    }
 
     auth.onAuthStateChanged(user => {
       currentUser = user;
@@ -581,9 +597,9 @@
         btn.style.display = "flex";
         btn.style.alignItems = "center";
         btn.style.justifyContent = "center";
-        const allAdmins = [...ADMIN_EMAILS, ...adminList];
-        document.getElementById("userDropdown").querySelector(".admin-btn").style.display =
-          allAdmins.includes(user.email) ? "block" : "none";
+        document.getElementById("userDropdown").querySelectorAll(".admin-btn").forEach(btn => {
+          btn.style.display = isAdminEmail(user.email) ? "block" : "none";
+        });
         loadFavoritesFromDB();
       } else {
         btn.textContent = "Login";
@@ -592,34 +608,33 @@
         btn.style.borderRadius = "";
         btn.style.padding = "";
         btn.style.display = "";
-        document.getElementById("userDropdown").querySelector(".admin-btn").style.display = "none";
+        document.getElementById("userDropdown").querySelectorAll(".admin-btn").forEach(btn => {
+          btn.style.display = "none";
+        });
       }
       updateCartBadge();
       updateFavCount();
+      checkMaintenance();
     });
 
     function renderProductCard(p, container) {
       const isFav = favorites.includes(p.id);
-      const imgContent = p.image
-        ? `<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=font-size:3rem>🧊</span>';">`
-        : `<span style="font-size:3rem">🧊</span>`;
-      
       let badges = "";
       if (p.badge === "fire") badges = '<span class="badge fire">🔥 Fan Favorite</span>';
       else if (p.badge === "worker") badges = '<span class="badge worker">♥️ Worker\'s Favorite</span>';
       else if (p.badge === "deal") badges = '<span class="badge deal">⚡ Deal</span>';
-      
+
       const hasDiscount = discounts[p.id];
       const discountedPrice = hasDiscount ? Math.round(p.price * (1 - discounts[p.id] / 100) * 100) / 100 : p.price;
-      
+
       if (hasDiscount) {
         badges += `<span class="badge discount">${discounts[p.id]}% OFF</span>`;
       }
-      
+
       container.innerHTML += `
         <div class="product-card" onclick="showProductDetail(${p.id})">
           <button class="fav-btn ${isFav?"favorited":""}" onclick="event.stopPropagation();toggleFavorite(${p.id})"><span style="font-size:1.2rem;">${isFav?"♥":"♡"}</span></button>
-          <div class="product-image">${imgContent}</div>
+          <div class="product-emoji">${p.emoji || '🧊'}</div>
           <div class="product-info">
             <div class="product-badges">${badges}</div>
             <div class="product-name">${p.name}</div>
@@ -636,7 +651,6 @@
       ["featuredGrid","animalsGrid","fidgetsGrid","figuresGrid","vehiclesGrid","airpodsGrid","accessoriesGrid","keycapsGrid"].forEach(id => {
         document.getElementById(id).innerHTML = "";
       });
-      // Featured shows products with badges
       products.filter(p => p.badge === "fire" || p.badge === "worker" || p.badge === "deal").forEach(p => renderProductCard(p, document.getElementById("featuredGrid")));
       products.filter(p => p.category === "Animals").forEach(p => renderProductCard(p, document.getElementById("animalsGrid")));
       products.filter(p => p.category === "Fidgets").forEach(p => renderProductCard(p, document.getElementById("fidgetsGrid")));
@@ -655,13 +669,13 @@
       });
       document.getElementById("favoritesPage").classList.remove("show");
       document.getElementById("mainContent").classList.add("hide");
-      
+
       if (cat === "Featured") {
         document.getElementById("featuredSection").style.display = "block";
         document.getElementById("mainContent").classList.remove("hide");
         return;
       }
-      
+
       const sectionMap = {
         "Animals": "animalsSection",
         "Fidgets": "fidgetsSection",
@@ -686,20 +700,23 @@
       selectedProduct = products.find(p => p.id === id);
       if (!selectedProduct) return;
       document.getElementById("modalTitle").textContent = selectedProduct.name;
-      const imgEl = document.getElementById("modalImage");
-      if (selectedProduct.image) { imgEl.src = selectedProduct.image; imgEl.style.display = ""; }
-      else { imgEl.style.display = "none"; }
+      document.getElementById("modalEmoji").textContent = selectedProduct.emoji || "🧊";
       document.getElementById("modalDesc").textContent = selectedProduct.desc + (selectedProduct.size ? ` (${selectedProduct.size})` : "");
       document.getElementById("articulatedToggle").style.display = selectedProduct.art ? "" : "none";
       document.getElementById("artCheckbox").checked = false;
       modalQty = 1;
       document.getElementById("modalQty").textContent = modalQty;
+
+      // Generate AI Overview
+      const overviewEl = document.getElementById("modalOverview");
+      overviewEl.innerHTML = `<strong>🤖 AI Overview:</strong> ${selectedProduct.name} is a ${selectedProduct.desc.toLowerCase()}. Perfect for 3D printing enthusiasts!`;
+
       const sizeContainer = document.getElementById("sizeSelector");
-      const sizes = ["XtraSmall","Small","KindaSmall","Medium","Large","Big Boi"];
+      const sizes = ["Small","Medium","Large","Big Boi"];
       sizeContainer.innerHTML = sizes.map((s,i) =>
-        `<button class="size-btn ${i===1?"active":""}" onclick="selectSize(${i},this)">${s}</button>`
+        `<button class="size-btn ${i===0?"active":""}" onclick="selectSize(${i},this)">${s}</button>`
       ).join("");
-      selectedSize = 1;
+      selectedSize = 0;
       updateModalPrice();
       document.getElementById("productModal").classList.add("open");
     }
@@ -718,7 +735,7 @@
         document.getElementById("modalPrice").textContent = "$" + base;
         return;
       }
-      const size = ["XtraSmall","Small","KindaSmall","Medium","Large","Big Boi"][selectedSize];
+      const size = ["Small","Medium","Large","Big Boi"][selectedSize];
       const artPrice = size === "Big Boi" ? 5 : size === "Large" ? 3 : 1;
       document.getElementById("modalPrice").textContent = "$" + (base + artPrice);
     }
@@ -733,7 +750,7 @@
       const p = products.find(x => x.id === id);
       if (!p) return;
       const discountedPrice = discounts[p.id] ? Math.round(p.price * (1 - discounts[p.id] / 100) * 100) / 100 : p.price;
-      cart.push({ id: p.id, name: p.name, price: discountedPrice, originalPrice: p.price, size: p.size||"Small", art: false, qty: 1, image: p.image });
+      cart.push({ id: p.id, name: p.name, price: discountedPrice, originalPrice: p.price, size: p.size||"Small", art: false, qty: 1, emoji: p.emoji });
       updateCartBadge(); saveCart();
       alert(`${p.name} added to cart!`);
     }
@@ -742,7 +759,7 @@
       if (!selectedProduct) return;
       const art = selectedProduct.art && document.getElementById("artCheckbox").checked;
       const price = discounts[selectedProduct.id] ? Math.round(selectedProduct.price * (1 - discounts[selectedProduct.id] / 100) * 100) / 100 : selectedProduct.price;
-      cart.push({ id: selectedProduct.id, name: selectedProduct.name, price: price, originalPrice: selectedProduct.price, size: ["XtraSmall","Small","KindaSmall","Medium","Large","Big Boi"][selectedSize], art: art, qty: modalQty, image: selectedProduct.image });
+      cart.push({ id: selectedProduct.id, name: selectedProduct.name, price: price, originalPrice: selectedProduct.price, size: ["Small","Medium","Large","Big Boi"][selectedSize], art: art, qty: modalQty, emoji: selectedProduct.emoji });
       updateCartBadge(); saveCart();
       closeModal("productModal");
       alert(`${selectedProduct.name} added to cart!`);
@@ -758,7 +775,7 @@
       if (cart.length === 0) { container.innerHTML = '<div class="empty-cart">Your cart is empty</div>'; return; }
       container.innerHTML = cart.map((p,i) => `
         <div class="cart-item">
-          <div class="cart-item-emoji">${p.image ? `<img src="${p.image}" style="width:50px;height:50px;object-fit:contain;">` : '🧊'}</div>
+          <div class="cart-item-emoji">${p.emoji || '🧊'}</div>
           <div class="cart-item-info">
             <div class="cart-item-name">${p.name}</div>
             <div class="cart-item-size">${p.size}${p.art?" Articulated":""} - $${p.price} each</div>
@@ -782,10 +799,10 @@
     function checkout() {
       if (!currentUser) { showAuth(); return; }
       if (cart.length === 0) return alert("Cart is empty!");
-      
+
       let orderDetails = cart.map(p => `${p.qty}x ${p.name} (${p.size}${p.art?" Articulated":""}) - $${p.price}`).join("\n");
       let total = cart.reduce((a, x) => a + x.price * x.qty, 0);
-      
+
       const promo = document.getElementById("promoCode").value.trim();
       if (promo && promoCodes[promo]) {
         const discount = promoCodes[promo];
@@ -793,7 +810,7 @@
         total = Math.round((total - discountAmount) * 100) / 100;
         orderDetails += `\n\nPromo code ${promo} applied: ${discount}% off`;
       }
-      
+
       const form = document.createElement("form");
       form.name = "cart-order";
       form.netlify = "true";
@@ -877,7 +894,7 @@
       ).then(() => closeModal("authModal"));
     }
 
-    function logout() { auth.signOut(); document.getElementById("userDropdown").classList.remove("show"); isAdmin = false; }
+    function logout() { auth.signOut(); document.getElementById("userDropdown").classList.remove("show"); }
 
     function showCustomPrint() {
       if (!currentUser) { showAuth(); return; }
@@ -907,21 +924,9 @@
 
     function showAdmin() {
       if (!currentUser) { showAuth(); return; }
-      const allAdmins = [...ADMIN_EMAILS, ...adminList];
-      if (!allAdmins.includes(currentUser.email)) return alert("Admin access only.");
+      if (!isAdminEmail(currentUser.email)) return alert("Admin access only.");
       document.getElementById("adminModal").classList.add("open");
-      document.getElementById("adminLogin").style.display = isAdmin ? "none" : "block";
-      document.getElementById("adminContent").style.display = isAdmin ? "block" : "none";
-      if (isAdmin) loadAdminData();
-    }
-
-    function checkAdminPass() {
-      if (document.getElementById("adminPass").value === ADMIN_PASS) {
-        isAdmin = true;
-        document.getElementById("adminLogin").style.display = "none";
-        document.getElementById("adminContent").style.display = "block";
-        loadAdminData();
-      } else alert("Wrong password");
+      loadAdminData();
     }
 
     function grantAdmin() {
@@ -956,7 +961,7 @@
     function loadAdminData() {
       updateAdminList();
       updatePromoList();
-      
+
       db.collection("customPrints").where("status","==","pending").get().then(snap => {
         const container = document.getElementById("adminCustomPrints");
         if (snap.empty) { container.innerHTML = "<p>No pending requests.</p>"; return; }
@@ -993,8 +998,7 @@
       const product = products.find(p => p.name.toLowerCase().includes(msg.toLowerCase()) || p.desc.toLowerCase().includes(msg.toLowerCase()) || p.category.toLowerCase().includes(msg.toLowerCase()));
       setTimeout(() => {
         if (product) {
-          const imgHtml = product.image ? `<br><img src="${product.image}" alt="${product.name}">` : "";
-          messages.innerHTML += `<div class="rvgpt-msg bot">We have <strong>${product.name}</strong>! ${product.desc}<br>Price: $${product.price}${imgHtml}</div>`;
+          messages.innerHTML += `<div class="rvgpt-msg bot">We have <strong>${product.name}</strong>! ${product.desc}<br>Price: $${product.price} ${product.emoji}</div>`;
         } else {
           messages.innerHTML += `<div class="rvgpt-msg bot">I'd be happy to help! We have ${products.length} products. You can also request a <a href="#" onclick="toggleRVGPT();showCustomPrint();return false;">custom print ($15)</a> if you don't see what you need.</div>`;
         }
@@ -1006,11 +1010,11 @@
       if (!val) { renderAll(); return; }
       const q = val.toLowerCase();
       const matches = products.filter(p => p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-      
+
       ["featuredSection","animalsSection","fidgetsSection","figuresSection","vehiclesSection","airpodsSection","accessoriesSection","keycapsSection"].forEach(id => {
         document.getElementById(id).style.display = "none";
       });
-      
+
       document.getElementById("animalsGrid").innerHTML = "";
       if (matches.length === 0) {
         document.getElementById("animalsGrid").innerHTML = '<div class="no-results">No products found. <a href="#" onclick="toggleRVGPT();showCustomPrint();return false;">Request a custom print ($15)?</a></div>';
@@ -1027,6 +1031,7 @@
       if (!e.target.closest(".user-menu")) document.getElementById("userDropdown").classList.remove("show");
     });
 
+    checkMaintenance();
     renderAll();
     updateCartBadge();
     updateFavCount();
